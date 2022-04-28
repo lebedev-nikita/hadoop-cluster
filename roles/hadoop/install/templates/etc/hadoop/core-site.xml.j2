@@ -1,0 +1,14 @@
+<configuration>
+  <property>
+    <name>fs.default.name</name>
+    <value>hdfs://{{ master_host }}:19000</value>
+  </property>
+  <property>
+    <name>hadoop.proxyuser.hadoop.hosts</name>
+    <value>*</value>
+  </property>
+  <property>
+    <name>hadoop.proxyuser.hadoop.groups</name>
+    <value>*</value>
+  </property>
+</configuration>

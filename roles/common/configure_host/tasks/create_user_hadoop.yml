@@ -1,0 +1,32 @@
+- name: Create user "hadoop"
+  user:
+    name: hadoop
+    state: present
+    create_home: yes
+    generate_ssh_key: yes
+    groups: sudo
+    append: yes
+    shell: /bin/bash
+    umask: 022
+
+- name: Configure .bashrc
+  template:
+    src: "{{ item }}.j2"
+    dest: "/{{ item }}"
+    owner: hadoop
+    group: hadoop
+  loop:
+    - home/hadoop/.bashrc
+
+- name: Fetch ssh public keys from all nodes to master
+  fetch:
+    src: /home/hadoop/.ssh/id_rsa.pub
+    dest: "buffer/{{ inventory_hostname }}-id_rsa.pub"
+    flat: yes
+
+- name: Add each key to each server
+  loop: "{{ groups['all'] }}"
+  ansible.posix.authorized_key:
+    user: hadoop
+    key: "{{ lookup('file', 'buffer/{{ item }}-id_rsa.pub')  }}"
+    validate_certs: no

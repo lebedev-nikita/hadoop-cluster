@@ -1,0 +1,8 @@
+- import_role:
+    name: common/register_running_services
+
+- name: stop spark
+  become_user: hadoop
+  become_flags: --login
+  when: spark_history_server_is_running
+  shell: /opt/spark/sbin/stop-history-server.sh

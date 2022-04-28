@@ -1,0 +1,6 @@
+- import_role:
+    role: common/register_running_services
+  failed_when: spark_history_server_is_running
+
+- name: remove spark dirs
+  shell: rm -rf /opt/spark*

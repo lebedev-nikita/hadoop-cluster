@@ -1,0 +1,2 @@
+datanode_data_dirs: "{{ data_dirs | product(['/hdfs/data']) | map('join') | list }}"
+namenode_data_dirs: "{{ data_dirs | product(['/hdfs/name']) | map('join') | list }}"

@@ -1,0 +1,6 @@
+- import_role:
+    role: common/register_running_services
+
+- name: stop derby
+  when: derby_is_running
+  shell: "kill {{ derby_pid }}"

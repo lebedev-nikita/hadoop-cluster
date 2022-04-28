@@ -1,0 +1,54 @@
+- name: download zk
+  unarchive:
+    src: https://dlcdn.apache.org/zookeeper/zookeeper-3.8.0/apache-zookeeper-3.8.0-bin.tar.gz
+    dest: /opt
+    remote_src: yes
+
+- name: link zk
+  file:
+    src: /opt/apache-zookeeper-3.8.0-bin
+    path: /opt/zookeeper
+    state: link
+    owner: hadoop
+    group: hadoop
+
+- name: create dirs
+  file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - /opt/zookeeper/conf
+    - /etc/systemd/system
+    - "{{ zookeeper_data_dir }}"
+
+- name: configure zk
+  template:
+    src: "{{ item }}.j2"
+    dest: "/{{ item }}"
+  loop:
+    - opt/zookeeper/conf/zoo.cfg
+    - etc/systemd/system/zk.service
+
+- name: myid
+  copy:
+    content: "{{ myid }}\n"
+    dest: "{{ zookeeper_data_dir }}/myid"
+  vars:
+    myid: "{{ groups['zk_hosts'].index(inventory_hostname) + 1 }}"
+
+- name: chown -R hadoop:hadoop
+  file:
+    path: "{{ item }}"
+    owner: hadoop
+    group: hadoop
+    recurse: yes
+    state: directory
+  loop:
+    - "{{ zookeeper_data_dir }}"
+    - /opt/zookeeper-3.8.0-bin
+
+- name: start zk service
+  systemd:
+    name: zk
+    state: restarted
+    enabled: yes

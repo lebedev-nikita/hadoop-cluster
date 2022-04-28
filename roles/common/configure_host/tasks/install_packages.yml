@@ -1,0 +1,64 @@
+- name: add docker GPG apt key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: add docker repository
+  apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu focal stable
+    state: present
+
+- name: install packages
+  apt:
+    update_cache: yes
+    pkg: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - vim
+      - netcat
+      - openjdk-8-jdk
+      - lsof
+      - net-tools
+      - python3
+      - python3-pip
+      - docker-ce
+      - acl
+
+- name: ensure that docker-compose from official repo is not installed (it's outdated there)
+  apt:
+    pkg: docker-compose
+    state: absent
+
+- name: pip install docker
+  pip:
+    name:
+      - docker
+      - docker-compose
+
+- name: install docker-compose
+  get_url:
+    url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64
+    dest: /usr/local/bin/docker-compose
+    mode: +x
+
+- name: add user "hadoop" to group "docker"
+  user:
+    name: hadoop
+    groups: docker
+    append: yes
+
+- name: create dir for docker configs
+  file:
+    path: /etc/systemd/system/docker.service.d
+    state: directory
+    recurse: yes
+
+- name: create proxy configs for docker
+  when: need_proxy
+  template:
+    src: "{{ item }}.j2"
+    dest: "/{{ item }}"
+  loop:
+    - etc/systemd/system/docker.service.d/http-proxy.conf
+    - home/hadoop/.docker/config.json

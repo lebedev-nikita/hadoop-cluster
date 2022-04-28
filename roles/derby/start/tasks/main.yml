@@ -1,0 +1,10 @@
+- import_role:
+    name: common/register_running_services
+
+- name: start derby server
+  when: not derby_is_running
+  become_user: hadoop
+  become_flags: --login
+  shell:
+    chdir: /opt/derby/data
+    cmd: nohup /opt/derby/bin/startNetworkServer -h 0.0.0.0 > /opt/derby/data/derby.nohup.out 2> /dev/null &

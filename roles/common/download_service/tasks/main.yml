@@ -1,0 +1,45 @@
+- debug:
+    msg: "download_service {{ link }}"
+
+- name: download
+  get_url:
+    url: "{{ url }}"
+    dest: "{{ base }}/{{ archive_file }}"
+
+- name: unarchive
+  unarchive:
+    src: "{{ base }}/{{ archive_file }}"
+    dest: "{{ base }}"
+    remote_src: yes
+    owner: hadoop
+    group: hadoop
+    creates: "{{ base }}/{{ unarchived_dir }}"
+
+- name: change owner
+  file:
+    path: "{{ base }}/{{ unarchived_dir }}"
+    owner: hadoop
+    group: hadoop
+    recurse: yes
+    state: directory
+
+- name: link
+  file:
+    src: "{{ base }}/{{ unarchived_dir }}"
+    path: "{{ base }}/{{ link }}"
+    state: link
+    owner: hadoop
+    group: hadoop
+
+- name: create logs directory
+  file:
+    path: "{{ base }}/{{ link }}/logs"
+    state: directory
+    owner: hadoop
+    group: hadoop
+
+- name: fill configuration files
+  template:
+    src: "{{ item }}.j2"
+    dest: "{{ base }}/{{ link }}/{{ item }}"
+  loop: "{{ templates }}"

@@ -1,0 +1,38 @@
+- import_role:
+    name: common/download_service
+  vars:
+    base: /opt
+    url: https://downloads.apache.org/hive/hive-3.1.2/apache-hive-3.1.2-bin.tar.gz
+    archive_file: apache-hive-3.1.2-bin.tar.gz
+    unarchived_dir: apache-hive-3.1.2-bin
+    link: hive
+    templates:
+      - conf/hive-site.xml
+      - conf/hive-env.sh
+
+- name: execute shell commands
+  become_user: hadoop
+  become_flags: --login
+  shell: "{{ item }}"
+  loop:
+    - "/opt/hadoop/bin/hdfs dfs -mkdir -p /user/hive/warehouse"
+    - "/opt/hadoop/bin/hdfs dfs -mkdir -p /tmp"
+    - "/opt/hadoop/bin/hdfs dfs -chmod g+w /user/hive/warehouse"
+    - "/opt/hadoop/bin/hdfs dfs -chmod g+w /tmp"
+    - "cp /opt/derby/lib/derbyclient.jar /opt/hive/lib"
+    - "cp /opt/derby/lib/derbytools.jar /opt/hive/lib"
+
+- name: line
+  lineinfile:
+    path: /opt/hive/scripts/metastore/upgrade/derby/hive-schema-3.1.0.derby.sql
+    regexp: "{{ item }}"
+    state: absent
+  loop:
+    - CREATE FUNCTION "APP"."NUCLEUS_ASCII"
+    - CREATE FUNCTION "APP"."NUCLEUS_MATCHES"
+
+- name: init derby schema
+  when: need_format
+  become_user: hadoop
+  become_flags: --login
+  shell: /opt/hive/bin/schematool -initSchema -dbType derby

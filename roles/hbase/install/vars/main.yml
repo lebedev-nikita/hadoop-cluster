@@ -1,0 +1,1 @@
+master_zookeeper_data_dir: "{{ hostvars[groups['masters'][0]]['data_dirs'][0] }}/zookeeper"

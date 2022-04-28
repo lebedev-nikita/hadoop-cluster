@@ -1,0 +1,9 @@
+- import_role:
+    name: common/register_running_services
+  failed_when: hdfs_is_running or yarn_is_running or mapred_is_running
+
+- shell: "rm -rf {{ item }}/hdfs"
+  loop: "{{ data_dirs }}"
+
+- shell: rm -rf /opt/hadoop*
+- shell: rm -rf /tmp/hadoop-hadoop-*

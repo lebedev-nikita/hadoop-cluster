@@ -1,0 +1,27 @@
+- import_tasks: create_user_hadoop.yml
+- import_tasks: install_packages.yml
+
+- name: configure /etc/hosts
+  template:
+    src: "etc/hosts.j2"
+    dest: /etc/hosts
+
+- name: set hostname
+  hostname:
+    name: "{{ inventory_hostname }}"
+
+- name: create /opt directory
+  file:
+    path: /opt
+    state: directory
+    mode: "755"
+    owner: hadoop
+    group: hadoop
+
+- name: configure data dirs
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: hadoop
+    group: hadoop
+  loop: "{{ data_dirs }}"

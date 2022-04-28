@@ -1,0 +1,25 @@
+- import_role:
+    name: common/register_running_services
+
+- name: start hdfs
+  when: not hdfs_is_running
+  become_user: hadoop
+  become_flags: --login
+  shell: nohup /opt/hadoop/sbin/start-dfs.sh > /opt/hadoop/logs/hdfs.nohup.out
+
+- name: start yarn
+  when: not yarn_is_running
+  become_user: hadoop
+  become_flags: --login
+  shell: nohup /opt/hadoop/sbin/start-yarn.sh > /opt/hadoop/logs/yarn.nohup.out
+
+- name: start mapreduce history server
+  when: not mapred_is_running
+  become_user: hadoop
+  become_flags: --login
+  shell: nohup /opt/hadoop/bin/mapred --daemon start historyserver > /opt/hadoop/logs/mapred-history-server.nohup.out
+
+- name: leave hdfs safe mode
+  become_user: hadoop
+  become_flags: --login
+  shell: /opt/hadoop/bin/hdfs dfsadmin -safemode leave

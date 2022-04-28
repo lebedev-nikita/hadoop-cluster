@@ -1,0 +1,7 @@
+# NOTE: схема, инициализированная в hive/install,
+#       удаляется вместе с остальными данными derby в derby/clean
+# NOTE: данные hdfs: /user/hive/warehouse
+#       удаляются вместе с hdfs
+
+- name: remove hive dirs
+  shell: rm -rf /opt/hive* && rm -rf /opt/apache-hive*

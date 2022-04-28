@@ -1,0 +1,9 @@
+- name: make sure that hadoop is not running
+  import_role:
+    name: common/register_running_services
+  failed_when: hdfs_is_running or yarn_is_running
+
+- name: format namenode
+  become_user: hadoop
+  become_flags: --login
+  shell: yes | /opt/hadoop/bin/hdfs namenode -format

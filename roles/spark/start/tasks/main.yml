@@ -1,0 +1,8 @@
+- import_role:
+    name: common/register_running_services
+
+- name: start spark history server
+  when: not spark_history_server_is_running
+  become_user: hadoop
+  become_flags: --login
+  shell: nohup /opt/spark/sbin/start-history-server.sh > /opt/spark/logs/spark-history-server.nohup.out

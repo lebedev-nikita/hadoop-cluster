@@ -1,0 +1,24 @@
+- name: check jps
+  become: yes
+  shell: jps
+  register: jps_output
+
+- name: check if airflow is running
+  shell: which docker && docker ps
+  register: docker_ps
+
+- name: check that pip docker is installed
+  shell: pip list
+  register: pip_packages
+
+- name: set facts about processes
+  set_fact:
+    hdfs_is_running: '{{ "NameNode" in jps_output.stdout }}'
+    yarn_is_running: '{{ "ResourceManager" in jps_output.stdout }}'
+    mapred_is_running: '{{ "JobHistoryServer" in jps_output.stdout }}'
+    hbase_is_running: '{{ "HMaster" in jps_output.stdout }}'
+    spark_history_server_is_running: '{{ " HistoryServer" in jps_output.stdout }}'
+    derby_is_running: '{{ "NetworkServerControl" in jps_output.stdout }}'
+    derby_pid: '{{ jps_output.stdout | regex_search("\d+ NetworkServerControl") | regex_search("\d+") }}'
+    pip_docker_is_installed: '{{ pip_packages | regex_search("docker") != none }}'
+    airflow_is_running: '{{ docker_ps | regex_search("airflow") != none }}'

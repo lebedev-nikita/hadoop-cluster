@@ -1,0 +1,8 @@
+- import_role:
+    role: common/register_running_services
+
+- name: stop airflow
+  when: airflow_is_running
+  community.docker.docker_compose:
+    project_src: /opt/airflow
+    state: absent

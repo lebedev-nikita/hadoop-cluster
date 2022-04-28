@@ -1,0 +1,16 @@
+FROM apache/airflow:2.2.5-python3.9
+
+{% if need_proxy %}
+ENV http_proxy=http://10.106.79.55:3128
+ENV https_proxy=http://10.106.79.55:3128
+{% endif %}
+
+USER root
+RUN apt-get update -y
+RUN apt-get install -y libsasl2-dev libsasl2-2 libsasl2-modules-gssapi-mit build-essential
+
+USER airflow
+RUN pip install airflow-code-editor
+RUN pip install apache-airflow-providers-apache-hive
+RUN pip install apache-airflow-providers-apache-spark
+RUN pip install apache-airflow-providers-postgres

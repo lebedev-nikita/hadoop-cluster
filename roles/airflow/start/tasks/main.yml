@@ -1,0 +1,4 @@
+- name: run airflow
+  community.docker.docker_compose:
+    project_src: /opt/airflow
+    state: present
