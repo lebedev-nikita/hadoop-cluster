@@ -1,12 +1,17 @@
 init: 
-	ansible-playbook --ask-become-pass -i inventory.ini start.yml \
-		-e '{ need_format: true }'
+	ansible-playbook -i inventory.ini _init_hosts.yml && \
+	ansible-playbook -i inventory.ini _download.yml && \
+	ansible-playbook -i inventory.ini _configure.yml && \
+	ansible-playbook -i inventory.ini _start.yml -e '{ need_format: true }'
 
 start:
-	ansible-playbook --ask-become-pass -i inventory.ini start.yml
+	ansible-playbook -i inventory.ini _start.yml
 
 stop:
-	ansible-playbook --ask-become-pass -i inventory.ini stop.yml
+	ansible-playbook -i inventory.ini _stop.yml
 
-clean:
-	ansible-playbook --ask-become-pass -i inventory.ini clean.yml
+configure:
+	ansible-playbook -i inventory.ini _configure.yml
+
+clean: stop
+	ansible-playbook -i inventory.ini clean.yml

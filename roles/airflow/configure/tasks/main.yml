@@ -1,0 +1,32 @@
+- name: create airflow dirs
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: hadoop
+    group: hadoop
+    mode: "777"
+  loop:
+    - /opt/airflow
+    - /opt/airflow/logs
+    - /opt/airflow/dags
+    - /opt/airflow/plugins
+
+- name: put files to /opt/airflow
+  template:
+    src: "{{ item }}.j2"
+    dest: "/opt/airflow/{{ item }}"
+    owner: hadoop
+    group: hadoop
+  loop:
+    # - Dockerfile
+    - docker-compose.yml
+    - .env
+# - name: build docker image
+#   become_user: hadoop
+#   become_flags: --login
+#   community.docker.docker_image:
+#     name: airflow-with-plugins
+#     build:
+#       path: /opt/airflow
+#     state: present
+#     source: build

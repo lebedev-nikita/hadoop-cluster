@@ -1,0 +1,8 @@
+- import_role:
+    name: common/download_service
+  vars:
+    base: /opt
+    url: https://dlcdn.apache.org/spark/spark-3.2.1/spark-3.2.1-bin-hadoop3.2.tgz
+    archive_file: spark-3.2.1-bin-hadoop3.2.tgz
+    unarchived_dir: spark-3.2.1-bin-hadoop3.2
+    link: spark

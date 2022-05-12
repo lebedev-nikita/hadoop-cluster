@@ -1,0 +1,8 @@
+- name: fill configuration files
+  template:
+    src: "{{ item }}.j2"
+    dest: "/opt/hbase/{{ item }}"
+  loop:
+    - "conf/hbase-env.sh"
+    - "conf/hbase-site.xml"
+    - "conf/regionservers"

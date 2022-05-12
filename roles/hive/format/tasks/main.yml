@@ -1,0 +1,4 @@
+- name: init derby schema
+  become_user: hadoop
+  become_flags: --login
+  shell: /opt/hive/bin/schematool -initSchema -dbType derby

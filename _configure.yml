@@ -1,0 +1,10 @@
+- hosts: all
+  become: yes
+  gather_facts: no
+  roles:
+    - role: hadoop/configure
+    - role: hbase/configure
+    - role: spark/configure
+    - role: derby/configure
+    - role: hive/configure
+    - role: airflow/configure

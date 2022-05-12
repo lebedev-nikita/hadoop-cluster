@@ -37,9 +37,3 @@
     state: directory
     owner: hadoop
     group: hadoop
-
-- name: fill configuration files
-  template:
-    src: "{{ item }}.j2"
-    dest: "{{ base }}/{{ link }}/{{ item }}"
-  loop: "{{ templates }}"

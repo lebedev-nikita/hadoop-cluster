@@ -1,0 +1,20 @@
+- name: fill configuration files
+  template:
+    src: "{{ item }}.j2"
+    dest: "/opt/hadoop/{{ item }}"
+  loop:
+    - etc/hadoop/core-site.xml
+    - etc/hadoop/hdfs-site.xml
+    - etc/hadoop/mapred-site.xml
+    - etc/hadoop/yarn-site.xml
+    - etc/hadoop/workers
+
+- name: create data dirs
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: hadoop
+    group: hadoop
+  loop: "{{ dirs }}"
+  vars:
+    dirs: "{{ namenode_data_dirs  if is_master_host else datanode_data_dirs }}"

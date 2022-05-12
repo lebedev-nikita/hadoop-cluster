@@ -1,4 +1,8 @@
 need_format: False
-need_proxy: False
 master_host: "{{ groups['masters'][0] }}"
 is_master_host: "{{ inventory_hostname == master_host }}"
+
+ansible_become_password: ""
+
+need_proxy: False
+http_proxy: "http://10.106.79.55:3128"

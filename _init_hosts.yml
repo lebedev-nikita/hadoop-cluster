@@ -1,0 +1,11 @@
+- hosts: all
+  become: yes
+  gather_facts: no
+  roles:
+    - role: common/configure_host
+
+- hosts: zk_hosts
+  become: yes
+  gather_facts: no
+  roles:
+    - role: zookeeper

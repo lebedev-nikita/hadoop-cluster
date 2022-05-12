@@ -1,0 +1,6 @@
+- name: fill configuration files
+  template:
+    src: "{{ item }}.j2"
+    dest: "/opt/spark/{{ item }}"
+  loop:
+    - conf/spark-defaults.conf

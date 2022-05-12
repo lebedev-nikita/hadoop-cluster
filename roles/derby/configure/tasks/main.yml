@@ -1,0 +1,6 @@
+- name: create '/opt/derby/data' dir
+  file:
+    path: /opt/derby/data
+    state: directory
+    owner: hadoop
+    group: hadoop

@@ -1,0 +1,16 @@
+- hosts: masters
+  become: yes
+  gather_facts: no
+  roles:
+    - role: hadoop/format
+      when: need_format
+    - role: hadoop/start
+    - role: hbase/start
+    - role: spark/format
+      when: need_format
+    - role: spark/start
+    - role: derby/start
+    - role: hive/format
+      when: need_format
+    - role: hive/start
+    - role: airflow/start
