@@ -3,7 +3,12 @@
   gather_facts: no
   roles:
     - role: airflow/stop
+      when: services is not defined or "airflow" in services
     - role: derby/stop
+      when: services is not defined or "derby" in services
     - role: spark/stop
+      when: services is not defined or "spark" in services
     - role: hbase/stop
+      when: services is not defined or "hbase" in services
     - role: hadoop/stop
+      when: services is not defined or "hadoop" in services

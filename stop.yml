@@ -1,9 +1,0 @@
-- hosts: masters
-  become: yes
-  gather_facts: no
-  roles:
-    - role: airflow/stop
-    - role: derby/stop
-    - role: spark/stop
-    - role: hbase/stop
-    - role: hadoop/stop

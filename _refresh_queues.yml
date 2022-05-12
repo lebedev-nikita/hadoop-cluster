@@ -1,0 +1,5 @@
+- hosts: masters
+  gather_facts: no
+  become: yes
+  roles:
+    - role: hadoop/refresh_queues

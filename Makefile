@@ -1,17 +1,24 @@
-init: 
-	ansible-playbook -i inventory.ini _init_hosts.yml && \
-	ansible-playbook -i inventory.ini _download.yml && \
-	ansible-playbook -i inventory.ini _configure.yml && \
-	ansible-playbook -i inventory.ini _start.yml -e '{ need_format: true }'
-
 start:
-	ansible-playbook -i inventory.ini _start.yml
+	ansible-playbook _start.yml
 
 stop:
-	ansible-playbook -i inventory.ini _stop.yml
+	ansible-playbook _stop.yml
 
-configure:
-	ansible-playbook -i inventory.ini _configure.yml
+refresh_queues:
+	ansible-playbook _configure.yml -e '{ "services": ["hadoop"] }' && \
+	ansible-playbook _refresh_queues.yml
 
-clean: stop
-	ansible-playbook -i inventory.ini clean.yml
+init:
+	ansible-playbook _init_hosts.yml && \
+	ansible-playbook _download.yml && \
+	ansible-playbook _configure.yml && \
+	ansible-playbook _start.yml 
+
+dangerous_init_with_formatting: 
+	ansible-playbook _init_hosts.yml && \
+	ansible-playbook _download.yml && \
+	ansible-playbook _configure.yml && \
+	ansible-playbook _start.yml -e '{ "need_format": true }'
+
+dangerous_clean: stop
+	ansible-playbook _dangerous_clean.yml

@@ -3,7 +3,12 @@
   gather_facts: no
   roles:
     - role: hadoop/download
+      when: services is not defined or "hadoop" in services
     - role: hbase/download
+      when: services is not defined or "hbase" in services
     - role: spark/download
+      when: services is not defined or "spark" in services
     - role: derby/download
+      when: services is not defined or "derby" in services
     - role: hive/download
+      when: services is not defined or "hive" in services

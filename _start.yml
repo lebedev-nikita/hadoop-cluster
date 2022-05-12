@@ -3,14 +3,20 @@
   gather_facts: no
   roles:
     - role: hadoop/format
-      when: need_format
+      when: (services is not defined or "hadoop" in services) and need_format
     - role: hadoop/start
+      when: (services is not defined or "hadoop" in services)
     - role: hbase/start
+      when: (services is not defined or "hbase" in services)
     - role: spark/format
-      when: need_format
+      when: (services is not defined or "spark" in services) and need_format
     - role: spark/start
+      when: (services is not defined or "spark" in services)
     - role: derby/start
+      when: (services is not defined or "derby" in services)
     - role: hive/format
-      when: need_format
+      when: (services is not defined or "hive" in services) and need_format
     - role: hive/start
+      when: (services is not defined or "hive" in services)
     - role: airflow/start
+      when: (services is not defined or "airflow" in services)

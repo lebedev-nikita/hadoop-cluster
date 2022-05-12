@@ -3,8 +3,14 @@
   gather_facts: no
   roles:
     - role: hadoop/configure
+      when: services is not defined or "hadoop" in services
     - role: hbase/configure
+      when: services is not defined or "hbase" in services
     - role: spark/configure
+      when: services is not defined or "spark" in services
     - role: derby/configure
+      when: services is not defined or "derby" in services
     - role: hive/configure
+      when: services is not defined or "hive" in services
     - role: airflow/configure
+      when: services is not defined or "airflow" in services
