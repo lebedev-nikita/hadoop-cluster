@@ -2,19 +2,20 @@
   template:
     src: "{{ item }}.j2"
     dest: "/opt/hadoop/{{ item }}"
+    owner: hadoop
+    group: hadoop
   loop:
     - etc/hadoop/core-site.xml
     - etc/hadoop/hdfs-site.xml
-    - etc/hadoop/mapred-site.xml
     - etc/hadoop/yarn-site.xml
+    - etc/hadoop/mapred-site.xml
     - etc/hadoop/workers
+    - etc/hadoop/hadoop-env.sh
 
-- name: create data dirs
+- name: create datanode and namenode data dirs
   file:
     path: "{{ item }}"
     state: directory
-    owner: hadoop
+    owner: hdfs
     group: hadoop
-  loop: "{{ dirs }}"
-  vars:
-    dirs: "{{ namenode_data_dirs  if is_master_host else datanode_data_dirs }}"
+  loop: "{{ datanode_data_dirs + namenode_data_dirs }}"

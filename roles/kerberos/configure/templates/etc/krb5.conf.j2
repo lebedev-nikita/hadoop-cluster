@@ -1,0 +1,31 @@
+# The following krb5.conf variables are only for MIT Kerberos.
+	kdc_timesync = 1
+	ccache_type = 4
+	forwardable = true
+	proxiable = true
+
+# The following libdefaults parameters are only for Heimdal Kerberos.
+	fcc-mit-ticketflags = true
+
+[libdefaults]
+	default_realm = CONSULTANT.RU
+  dns_lookup_realm = false
+  dns_lookup_kdc = false
+  ticket_lifetime = 24h
+  renew_lifetime = 7d
+  forwardable = true
+
+[realms]
+  CONSULTANT.RU = {
+    kdc = kdc.consultant.ru
+    admin_server = kdc.consultant.ru
+  }
+
+[domain_realm]
+  .consultant.ru = CONSULTANT.RU
+  consultant.ru = CONSULTANT.RU
+
+[logging]
+  default = FILE:/var/log/krb5libs.log
+  kdc = FILE:/var/log/krb5kdc.log
+  admin_server = FILE:/var/log/kadmind.log

@@ -1,3 +1,4 @@
+{% set principal = "mapred/_HOST@CONSULTANT.RU" %}
 <configuration>
   <property>
     <name>mapreduce.job.user.name</name>
@@ -22,5 +23,15 @@
   <property>
     <name>mapreduce.reduce.env</name>
     <value>HADOOP_MAPRED_HOME=/opt/hadoop</value>
+  </property>
+
+  {# == Security == #}
+  <property>
+    <name>mapreduce.jobhistory.principal</name>
+    <value>{{ principal }}</value>
+  </property>
+  <property>
+    <name>mapreduce.jobhistory.keytab</name>
+    <value>{{ keytab_path }}</value>
   </property>
 </configuration>

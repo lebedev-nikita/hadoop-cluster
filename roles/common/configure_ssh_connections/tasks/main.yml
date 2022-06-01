@@ -1,0 +1,40 @@
+- name: "[{{ user }}] configure ssh connection"
+  debug:
+    msg:
+      {
+        user: "{{ user }}",
+        from_hosts: "{{ from_hosts }}",
+        to_hosts: "{{ to_hosts }}",
+      }
+
+- name: "[{{ user }}] fetch ssh public keys from all 'from_hosts' to local machine"
+  when: inventory_hostname in from_hosts
+  become_user: "{{ user }}"
+  fetch:
+    src: "~/.ssh/id_rsa.pub"
+    dest: "buffer/{{ user }}-{{ inventory_hostname }}-id_rsa.pub"
+    flat: yes
+
+- name: "[{{ user }}] exchange ssh keys"
+  when: inventory_hostname in to_hosts
+  loop: "{{ from_hosts }}"
+  loop_control:
+    loop_var: from_host_item
+  ansible.posix.authorized_key:
+    user: "{{ user }}"
+    key: "{{ lookup('file', 'buffer/{{ user }}-{{ from_host_item }}-id_rsa.pub')  }}"
+    validate_certs: no
+
+- name: "[{{ user }}] rm known_hosts"
+  when: inventory_hostname in from_hosts
+  become_user: "{{ user }}"
+  shell: rm ~/.ssh/known_hosts
+  failed_when: False
+
+- name: "[{{ user }}] add known_hosts"
+  when: inventory_hostname in from_hosts
+  become_user: "{{ user }}"
+  loop: "{{ to_hosts }}"
+  loop_control:
+    loop_var: to_host_item
+  shell: ssh-keyscan -t rsa {{ to_host_item }} >> ~/.ssh/known_hosts

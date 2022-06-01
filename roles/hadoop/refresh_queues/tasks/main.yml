@@ -1,4 +1,5 @@
 - name: refresh yarn queues
-  become_user: hadoop
-  become_flags: --login
-  shell: yarn rmadmin -refreshQueues
+  become_user: yarn
+  shell: |
+    . /etc/bash.bashrc
+    yarn rmadmin -refreshQueues

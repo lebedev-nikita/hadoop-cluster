@@ -1,8 +1,26 @@
 - import_role:
-    name: common/download_service
+    role: common/download_service
   vars:
-    base: /opt
     url: https://downloads.apache.org/hive/hive-3.1.2/apache-hive-3.1.2-bin.tar.gz
     archive_file: apache-hive-3.1.2-bin.tar.gz
     unarchived_dir: apache-hive-3.1.2-bin
     link: hive
+    owner: hive
+
+- name: download JDBC driver
+  become: yes
+  get_url:
+    url: https://jdbc.postgresql.org/download/postgresql-42.3.6.jar
+    dest: /usr/share/java/postgresql-jdbc-42.3.6.jar
+    mode: "644"
+
+- name: link
+  file:
+    state: link
+    src: /usr/share/java/postgresql-jdbc-42.3.6.jar
+    dest: /opt/hive/jdbc/postgresql-jdbc.jar
+
+- name: remove duplicate log4j jar
+  file:
+    path: /opt/hive/lib/log4j-slf4j-impl-2.10.0.jar
+    state: absent

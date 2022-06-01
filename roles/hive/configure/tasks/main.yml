@@ -3,23 +3,5 @@
     src: "{{ item }}.j2"
     dest: "/opt/hive/{{ item }}"
   loop:
-    - conf/hive-site.xml
     - conf/hive-env.sh
-
-# TODO: использоать модуль "copy"
-- name: execute shell commands
-  become_user: hadoop
-  become_flags: --login
-  shell: "{{ item }}"
-  loop:
-    - "cp /opt/derby/lib/derbyclient.jar /opt/hive/lib"
-    - "cp /opt/derby/lib/derbytools.jar /opt/hive/lib"
-
-- name: line
-  lineinfile:
-    path: /opt/hive/scripts/metastore/upgrade/derby/hive-schema-3.1.0.derby.sql
-    regexp: "{{ item }}"
-    state: absent
-  loop:
-    - CREATE FUNCTION "APP"."NUCLEUS_ASCII"
-    - CREATE FUNCTION "APP"."NUCLEUS_MATCHES"
+    - conf/hive-site.xml

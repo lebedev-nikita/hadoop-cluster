@@ -29,7 +29,7 @@ ansible-galaxy collection install ansible.posix community.docker
 ```
 
 3. Прописать хосты и соответствующие им переменные в [inventory.ini](./inventory.ini)
-4. Создать в корне проекта файл `password.ini` со следующим содержимым, заменив <BECOME_PASSWORD> на пароль пользователя, к которому происходит подключение по ssh.
+4. Создать в корне проекта файл `inventory.password.ini` со следующим содержимым, заменив <BECOME_PASSWORD> на пароль пользователя, к которому происходит подключение по ssh.
 
 ```ini
 [all:vars]
@@ -40,7 +40,7 @@ ansible_become_password = <BECOME_PASSWORD>
 
 Некоторые плейбуки принимают переменные:
 
-- `services` - список сервисов, к которым будет применяться плейбук. Допустимые элементы списка: "hadoop", "hbase", "spark", "derby", "hive", "airflow". Если переменная не указана, плейбук применится ко всем сервисам.
+- `services` - список сервисов, к которым будет применяться плейбук. Допустимые элементы списка: "hadoop", "hbase", "spark", "hive". Если переменная не указана, плейбук применится ко всем сервисам.
 - `need_format` - флаг, используемый только один раз, при первичной инициализации кластера. Форматирует NameNode. Допустимые значения true, false. Значение по умолчанию: false.
 
 # Плейбуки
@@ -124,27 +124,23 @@ ansible-playbook <playbook_name> -e '{ "services": ["hadoop", "hive", "spark"], 
 4. `make start`
 5. Закоммитить и запушить изменения
 
-# Адреса веб-сервисов
+# Адреса UI
+
+| Имя сервиса        | url                |
+| :----------------- | :----------------- |
+| HDFS NameNode      | http://host1:9870  |
+| HDFS DataNode      | http://host2:9864  |
+| YARN Cluster       | http://host1:8088  |
+| YARN Node          | http://host2:8042  |
+| Mapred History     | http://host1:19888 |
+| HBASE Master       | http://host1:16010 |
+| Spark History      | http://host1:18080 |
+| Hive Thrift Server | http://host1:10000 |
+
+# Адреса API
 
 | Имя сервиса         | url                 |
 | :------------------ | :------------------ |
 | HDFS                | http://host1:19000/ |
 | YARN ResouceManager | http://host1:8032/  |
-
-# Адреса веб-интерфейсов
-
-| Имя сервиса   | url                              |
-| :------------ | :------------------------------- |
-| HDFS NameNode | http://host1:9870/               |
-| HDFS DataNode | http://host2:9864/               |
-| YARN Cluster  | http://host1:8088/cluster        |
-| YARN Node     | http://host2:8042/node           |
-| YARN History  | http://host1:19888/jobhistory    |
-| HBASE Master  | http://host1:16010/master-status |
-| Spark History | http://host1:18080               |
-| Airflow       | http://host1:8081                |
-| Flower        | http://host1:8082                |
-
-# Логин и пароль Airflow
-
-airflow:airflow
+| HiveServer2         | http://host1:10002/ |

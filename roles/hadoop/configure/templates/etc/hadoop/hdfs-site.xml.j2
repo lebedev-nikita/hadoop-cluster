@@ -1,8 +1,10 @@
+{% set principal = "hdfs/_HOST@CONSULTANT.RU" %}
 <configuration>
   <property>
     <name>dfs.replication</name>
     <value>3</value>
   </property>
+  
   <property>
     <name>dfs.namenode.name.dir</name>
     <value>{{ namenode_data_dirs | join(',') }}</value>
@@ -10,5 +12,57 @@
   <property>
     <name>dfs.datanode.data.dir</name>
     <value>{{ datanode_data_dirs | join(',') }}</value>
+  </property>
+  <property>
+    <name>dfs.permissions.supergroup</name>
+    <value>hadoop</value>
+  </property>
+
+  {# == Security == #}
+  <property>
+    <name>dfs.datanode.address</name>
+    <value>0.0.0.0:1001</value>
+  </property>
+  <property>
+    <name>dfs.datanode.http.address</name>
+    <value>0.0.0.0:1002</value>
+  </property>
+
+  <property>
+    <name>dfs.namenode.keytab.file</name>
+    <value>{{ keytab_path }}</value>
+  </property>
+  <property>
+    <name>dfs.secondary.namenode.keytab.file</name>
+    <value>{{ keytab_path }}</value>
+  </property>
+  <property>
+    <name>dfs.datanode.keytab.file</name>
+    <value>{{ keytab_path }}</value>
+  </property>
+  <property>
+    <name>dfs.web.authentication.kerberos.keytab</name>
+    <value>{{ keytab_path }}</value>
+  </property>
+  <property>
+    <name>dfs.namenode.kerberos.principal</name>
+    <value>{{ principal }}</value>
+  </property>
+  <property>
+    <name>dfs.secondary.namenode.kerberos.principal</name>
+    <value>{{ principal }}</value>
+  </property>
+  <property>
+    <name>dfs.datanode.kerberos.principal</name>
+    <value>{{ principal }}</value>
+  </property>
+  <property>
+    <name>dfs.web.authentication.kerberos.principal</name>
+    <value>HTTP/{{ master_host }}@CONSULTANT.RU</value>
+  </property>
+  
+  <property>
+    <name>dfs.block.access.token.enable</name>
+    <value>true</value>
   </property>
 </configuration>

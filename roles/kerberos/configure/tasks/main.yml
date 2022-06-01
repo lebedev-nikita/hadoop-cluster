@@ -1,0 +1,7 @@
+- name: configure kerberos client
+  become: yes
+  template:
+    src: "{{ item }}.j2"
+    dest: "/{{ item }}"
+  loop:
+    - etc/krb5.conf

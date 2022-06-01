@@ -2,5 +2,7 @@
   template:
     src: "{{ item }}.j2"
     dest: "/opt/spark/{{ item }}"
+    owner: spark
+    group: hadoop
   loop:
     - conf/spark-defaults.conf

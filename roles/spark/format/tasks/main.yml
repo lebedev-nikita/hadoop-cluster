@@ -1,4 +1,6 @@
 - name: create spark logs directory in hdfs
-  become_user: hadoop
-  become_flags: --login
-  shell: /opt/hadoop/bin/hdfs dfs -mkdir -p /spark/logs
+  become_user: spark
+  shell: |
+    . /etc/bash.bashrc
+    kinit spark/{{ inventory_hostname }}@CONSULTANT.RU -kt {{ keytab_path }}
+    /opt/hadoop/bin/hdfs dfs -mkdir -p /spark/logs

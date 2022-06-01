@@ -1,0 +1,71 @@
+- import_tasks: install_packages.yml
+
+- name: configure /etc/hosts and /etc/bash.bashrc
+  template:
+    src: "{{ item }}.j2"
+    dest: "/{{ item }}"
+  loop:
+    - etc/hosts
+    - etc/bash.bashrc
+
+- name: set hostname
+  hostname:
+    name: "{{ inventory_hostname }}"
+
+- name: create user and group "hadoop"
+  user:
+    name: hadoop
+    shell: /bin/bash
+    umask: "002"
+
+- name: configure "root"
+  become: yes
+  user:
+    name: root
+    generate_ssh_key: yes
+
+- name: create users
+  user:
+    name: "{{ item }}"
+    state: present
+    generate_ssh_key: yes
+    groups:
+      - sudo
+      - hadoop
+    append: yes
+    shell: /bin/bash
+    umask: "002"
+  loop:
+    - zookeeper
+    - hdfs
+    - yarn
+    - mapred
+    - hbase
+    - spark
+    - hive
+
+- include_role:
+    role: common/configure_ssh_connections
+  vars:
+    user: "{{ item.user }}"
+    from_hosts: "{{ groups[item.from_hosts] }}"
+    to_hosts: "{{ groups[item.to_hosts] }}"
+  loop:
+    - { user: zookeeper, from_hosts: zk_hosts, to_hosts: zk_hosts }
+    - { user: root, from_hosts: masters, to_hosts: all }
+    - { user: hdfs, from_hosts: masters, to_hosts: all }
+    - { user: yarn, from_hosts: masters, to_hosts: all }
+    - { user: hbase, from_hosts: masters, to_hosts: all }
+
+- name: create /opt directory
+  file:
+    path: /opt
+    state: directory
+    group: hadoop
+
+- name: configure data dirs
+  file:
+    path: "{{ item }}"
+    state: directory
+    group: hadoop
+  loop: "{{ data_dirs }}"

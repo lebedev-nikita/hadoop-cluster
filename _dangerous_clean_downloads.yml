@@ -1,0 +1,11 @@
+- hosts: masters
+  become: yes
+  roles:
+    - role: hive/clean/downloads
+    - role: spark/clean
+
+- hosts: all
+  become: yes
+  roles:
+    - role: hbase/clean
+    - role: hadoop/clean/downloads

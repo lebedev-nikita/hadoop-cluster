@@ -1,14 +1,21 @@
+- hosts: zk_hosts
+  become: yes
+  roles:
+    - role: zookeeper/download
+      when: (services is not defined or "zookeeper" in services) and inventory_hostname in groups['zk_hosts']
+
 - hosts: all
   become: yes
-  gather_facts: no
   roles:
     - role: hadoop/download
       when: services is not defined or "hadoop" in services
     - role: hbase/download
       when: services is not defined or "hbase" in services
+
+- hosts: masters
+  become: yes
+  roles:
     - role: spark/download
       when: services is not defined or "spark" in services
-    - role: derby/download
-      when: services is not defined or "derby" in services
     - role: hive/download
       when: services is not defined or "hive" in services

@@ -2,4 +2,4 @@
 buffer
 output.*
 test.yml
-password.ini
+inventory.password.ini

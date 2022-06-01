@@ -1,8 +1,0 @@
-- name: make sure that derby is not running
-  import_role:
-    name: common/register_running_services
-  failed_when: derby_is_running
-
-- name: rm -rf /opt/*derby*
-  become: yes
-  shell: rm -rf /opt/*derby*

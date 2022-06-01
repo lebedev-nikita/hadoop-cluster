@@ -1,0 +1,34 @@
+- name: create dirs
+  file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - /opt/zookeeper/conf
+    - /etc/systemd/system
+    - "{{ zookeeper_data_dir }}"
+
+- name: configure zk
+  template:
+    src: "{{ item }}.j2"
+    dest: "/{{ item }}"
+  loop:
+    - opt/zookeeper/conf/zoo.cfg
+    - etc/systemd/system/zk.service
+
+- name: myid
+  copy:
+    content: "{{ myid }}\n"
+    dest: "{{ zookeeper_data_dir }}/myid"
+  vars:
+    myid: "{{ groups['zk_hosts'].index(inventory_hostname) + 1 }}"
+
+- name: chown -R zookeeper:hadoop
+  file:
+    path: "{{ item }}"
+    owner: zookeeper
+    group: hadoop
+    recurse: yes
+    state: directory
+  loop:
+    - "{{ zookeeper_data_dir }}"
+    # - /opt/zookeeper-3.8.0-bin

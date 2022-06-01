@@ -1,8 +1,8 @@
 - import_role:
-    name: common/download_service
+    role: common/download_service
   vars:
-    base: /opt
     url: https://dlcdn.apache.org/hadoop/common/hadoop-3.3.1/hadoop-3.3.1.tar.gz
     archive_file: hadoop-3.3.1.tar.gz
     unarchived_dir: hadoop-3.3.1
     link: hadoop
+    owner: hadoop

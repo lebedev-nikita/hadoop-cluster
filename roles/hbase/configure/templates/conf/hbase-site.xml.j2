@@ -1,3 +1,4 @@
+{% set principal = "hbase/_HOST@CONSULTANT.RU" %}
 <configuration>
   <property>
     <name>hbase.cluster.distributed</name>
@@ -18,10 +19,28 @@
 
   <property>
     <name>hbase.zookeeper.quorum</name>
-    <value>{{ groups['slaves'] | join(',')  }}</value>
+    <value>{{ groups['zk_hosts'] | join(',')  }}</value>
   </property>
   <property>
     <name>hbase.zookeeper.property.dataDir</name>
     <value>{{ master_zookeeper_data_dir }}</value>
+  </property>
+
+  {# == Security == #}
+  <property>
+    <name>hbase.master.kerberos.principal</name>
+    <value>{{ principal }}</value>
+  </property>
+  <property>
+    <name>hbase.regionserver.kerberos.principal</name>
+    <value>{{ principal }}</value>
+  </property>
+  <property>
+    <name>hbase.master.keytab.file</name>
+    <value>{{ keytab_path }}</value>
+  </property>
+  <property>
+    <name>hbase.regionserver.keytab.file</name>
+    <value>{{ keytab_path }}</value>
   </property>
 </configuration>

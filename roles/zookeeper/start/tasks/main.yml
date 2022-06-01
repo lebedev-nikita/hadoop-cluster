@@ -1,0 +1,6 @@
+- name: start zk service
+  become: yes
+  systemd:
+    name: zk
+    state: restarted
+    enabled: yes

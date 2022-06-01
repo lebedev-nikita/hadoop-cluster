@@ -2,6 +2,8 @@
   template:
     src: "{{ item }}.j2"
     dest: "/opt/hbase/{{ item }}"
+    owner: hbase
+    group: hadoop
   loop:
     - "conf/hbase-env.sh"
     - "conf/hbase-site.xml"

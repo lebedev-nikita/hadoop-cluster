@@ -1,20 +1,24 @@
 - import_role:
-    name: common/register_running_services
+    role: common/register_running_services
 
 - name: stop mapred
-  become_user: hadoop
-  become_flags: --login
+  become_user: mapred
   when: mapred_is_running
-  shell: /opt/hadoop/bin/mapred --daemon stop historyserver
+  shell: |
+    . /etc/bash.bashrc
+    /opt/hadoop/bin/mapred --daemon stop historyserver
 
 - name: stop yarn
-  become_user: hadoop
-  become_flags: --login
+  become_user: yarn
   when: yarn_is_running
-  shell: /opt/hadoop/sbin/stop-yarn.sh
+  shell: |
+    . /etc/bash.bashrc
+    /opt/hadoop/sbin/stop-yarn.sh
 
 - name: stop hdfs
-  become_user: hadoop
-  become_flags: --login
+  # become_user: hdfs
+  become: yes
   when: hdfs_is_running
-  shell: /opt/hadoop/sbin/stop-dfs.sh
+  shell: |
+    . /etc/bash.bashrc
+    /opt/hadoop/sbin/stop-dfs.sh

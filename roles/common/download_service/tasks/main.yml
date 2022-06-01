@@ -1,39 +1,47 @@
-- debug:
-    msg: "download_service {{ link }}"
+- set_fact:
+    _base: "{{ base | default('/opt') }}"
 
-- name: download
+- name: "[{{ link }}] debug"
+  debug:
+    msg:
+      {
+        base: "{{ _base }}",
+        link: "{{ link }}",
+        url: "{{ url }}",
+        owner: "{{ owner }}",
+        unarchived_dir: "{{ unarchived_dir }}",
+      }
+
+- name: "[{{ link }}] download service"
   get_url:
     url: "{{ url }}"
-    dest: "{{ base }}/{{ archive_file }}"
+    dest: "{{ _base }}/{{ archive_file }}"
 
-- name: unarchive
+- name: "[{{ link }}] unarchive"
   unarchive:
-    src: "{{ base }}/{{ archive_file }}"
-    dest: "{{ base }}"
+    src: "{{ _base }}/{{ archive_file }}"
+    dest: "{{ _base }}"
     remote_src: yes
-    owner: hadoop
+    owner: "{{ owner }}"
     group: hadoop
-    creates: "{{ base }}/{{ unarchived_dir }}"
+    creates: "{{ _base }}/{{ unarchived_dir }}"
 
-- name: change owner
-  file:
-    path: "{{ base }}/{{ unarchived_dir }}"
-    owner: hadoop
-    group: hadoop
-    recurse: yes
-    state: directory
+- name: "[{{ link }}] change owner"
+  become: yes
+  shell: "chown -R {{ owner }}:hadoop {{ _base }}/{{ unarchived_dir }} "
 
-- name: link
+- name: "[{{ link }}] link"
   file:
-    src: "{{ base }}/{{ unarchived_dir }}"
-    path: "{{ base }}/{{ link }}"
+    src: "{{ _base }}/{{ unarchived_dir }}"
+    path: "{{ _base }}/{{ link }}"
     state: link
-    owner: hadoop
+    owner: "{{ owner }}"
     group: hadoop
 
-- name: create logs directory
+- name: "[{{ link }}] create logs directory"
   file:
-    path: "{{ base }}/{{ link }}/logs"
+    path: "{{ _base }}/{{ link }}/logs"
     state: directory
-    owner: hadoop
+    owner: "{{ owner }}"
     group: hadoop
+    mode: "775"

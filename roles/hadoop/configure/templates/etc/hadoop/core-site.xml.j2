@@ -1,14 +1,47 @@
 <configuration>
   <property>
-    <name>fs.default.name</name>
+    <name>fs.defaultFS</name>
     <value>hdfs://{{ master_host }}:19000</value>
   </property>
+
+  {# == Proxy Users == #}
+
   <property>
-    <name>hadoop.proxyuser.hadoop.hosts</name>
+    <name>hadoop.proxyuser.hive.hosts</name>
+    <value>{{ master_host }}</value>
+  </property>
+  <property>
+    <name>hadoop.proxyuser.hive.users</name>
     <value>*</value>
   </property>
   <property>
-    <name>hadoop.proxyuser.hadoop.groups</name>
+    <name>hadoop.proxyuser.hive.groups</name>
     <value>*</value>
+  </property>
+  <property>
+    <name>hadoop.proxyuser.airflow.hosts</name>
+    <value>{{ master_host }}</value>
+  </property>
+  <property>
+    <name>hadoop.proxyuser.airflow.users</name>
+    <value>*</value>
+  </property>
+  <property>
+    <name>hadoop.proxyuser.airflow.groups</name>
+    <value>*</value>
+  </property>
+
+  {# == Security == #}
+  <property>
+    <name>hadoop.security.authentication</name>
+    <value>kerberos</value>
+  </property>
+  <property>
+    <name>hadoop.security.authorization</name>
+    <value>true</value>
+  </property>
+  <property>
+    <name>hadoop.rpc.protection</name>
+    <value>authentication</value>
   </property>
 </configuration>

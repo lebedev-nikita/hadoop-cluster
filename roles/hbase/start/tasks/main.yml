@@ -1,8 +1,9 @@
 - import_role:
-    name: common/register_running_services
+    role: common/register_running_services
 
 - name: start hbase
   when: not hbase_is_running
-  become_user: hadoop
-  become_flags: --login
-  shell: nohup /opt/hbase/bin/start-hbase.sh > /opt/hbase/logs/hbase.nohup.out
+  become_user: hbase
+  shell: |
+    . /etc/bash.bashrc
+    nohup /opt/hbase/bin/start-hbase.sh > /opt/hbase/logs/hbase.nohup.out
