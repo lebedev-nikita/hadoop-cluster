@@ -1,22 +1,30 @@
-init:
-	ansible-playbook _init_hosts.yml && \
-	ansible-playbook _download.yml && \
-	ansible-playbook _configure.yml
+_test:
+# Следующие 3 строчки кода написаны на языке Make, а не Bash.
+# Если добавить отступы слева от них, то утилита Make 
+# будет интерпретировать их как код на Bash (а нам это не нужно).
+ifndef INVENTORY
+	$(error ENV VARIABLE "INVENTORY" IS NOT DEFINED)
+endif
 
-start:
-	ansible-playbook _start.yml
+init: _test
+	ansible-playbook $(INVENTORY) _init_hosts.yml && \
+	ansible-playbook $(INVENTORY) _download.yml && \
+	ansible-playbook $(INVENTORY) _configure.yml
 
-stop:
-	ansible-playbook _stop.yml
+start: _test
+	ansible-playbook $(INVENTORY) _start.yml
 
-refresh_queues:
-	ansible-playbook _configure.yml -e '{ "services": ["hadoop"] }' && \
-	ansible-playbook _refresh_queues.yml
+stop: _test
+	ansible-playbook $(INVENTORY) _stop.yml
 
-dangerous_start_with_formatting: 
-	ansible-playbook _start.yml -e '{ "need_format": true }'
+refresh_queues: _test
+	ansible-playbook $(INVENTORY) _configure.yml -e '{ "services": ["hadoop"] }' && \
+	ansible-playbook $(INVENTORY) _refresh_queues.yml
 
-restart: stop
-	ansible-playbook _dangerous_clean_data.yml
-	ansible-playbook _configure.yml
-	ansible-playbook _start.yml -e '{ "need_format": true }'
+start_with_formatting_DANGEROUS: _test
+	ansible-playbook $(INVENTORY) _start.yml -e '{ "need_format": true }'
+
+restart_DANGEROUS: stop
+	ansible-playbook $(INVENTORY) _dangerous_clean_data.yml
+	ansible-playbook $(INVENTORY) _configure.yml
+	ansible-playbook $(INVENTORY) _start.yml -e '{ "need_format": true }'

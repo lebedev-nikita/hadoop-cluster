@@ -7,10 +7,17 @@
 
 # Первичная настройка Control Node
 
+## Переменные окружения
+
+```bash
+export ANSIBLE_MODE=dev
+export INVENTORY="-i inventory.$ANSIBLE_MODE -i inventory.$ANSIBLE_MODE.password"
+```
+
 ## Настройка SSH
 
 1. [Убедиться](/doc/ubuntu_ssh.md), что Control Node имеет ssh-доступ Managed Nodes.
-2. Убедиться, что подключение к Managed Nodes по ssh происходит к одному и тому же ползьователю, и этот пользователь имеет один и тот же пароль. Это BECOME_PASSWORD, его нужно будет использовать в разделе "Настройка Ansible".
+2. Убедиться, что подключение к Managed Nodes по ssh происходит к одному и тому же пользователю, и этот пользователь имеет один и тот же пароль. Это BECOME_PASSWORD, его нужно будет использовать в разделе "Настройка Ansible".
 3. Убедиться, что пользователь, к которому происходит подключение, имеет право выполнять команду `sudo`.
 
 ## Настройка Ansible
@@ -18,22 +25,28 @@
 1. Установить ansible и make
 
 ```bash
-sudo apt install ansible
-sudo apt install make
+sudo apt install -y ansible make
 ```
 
 2. Установить плагины:
 
 ```bash
-ansible-galaxy collection install ansible.posix community.docker
+ansible-galaxy collection install ansible.posix
 ```
 
 3. Прописать хосты и соответствующие им переменные в [inventory.ini](./inventory.ini)
-4. Создать в корне проекта файл `inventory.password.ini` со следующим содержимым, заменив <BECOME_PASSWORD> на пароль пользователя, к которому происходит подключение по ssh.
+4. Создать в корне проекта файл `inventory.password.ini` со следующим содержимым, заменив <BECOME_PASSWORD> на пароль пользователя, к которому происходит подключение по ssh
 
 ```ini
 [all:vars]
 ansible_become_password = <BECOME_PASSWORD>
+hive_db_password = hive
+```
+
+# Первичная настройка Managed Nodes
+
+```bash
+  sudo apt install -y python python3
 ```
 
 # Переменные

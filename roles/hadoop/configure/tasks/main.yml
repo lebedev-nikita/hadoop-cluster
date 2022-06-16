@@ -9,6 +9,7 @@
     - etc/hadoop/hdfs-site.xml
     - etc/hadoop/yarn-site.xml
     - etc/hadoop/mapred-site.xml
+    - etc/hadoop/hadoop-policy.xml
     - etc/hadoop/workers
     - etc/hadoop/hadoop-env.sh
 

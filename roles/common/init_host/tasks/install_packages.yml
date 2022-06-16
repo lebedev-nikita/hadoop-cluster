@@ -6,6 +6,7 @@
   vars:
     packages:
       - vim
+      - net-tools
       - netcat
       - members
       - openjdk-8-jdk
@@ -20,7 +21,7 @@
       - jsvc
       - postgresql
 
-- name: pip install docker
+- name: pip install
   pip:
     name:
       - pexpect

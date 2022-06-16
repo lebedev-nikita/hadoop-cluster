@@ -43,6 +43,7 @@
     - hbase
     - spark
     - hive
+    - HTTP
 
 - include_role:
     role: common/configure_ssh_connections

@@ -11,37 +11,56 @@
     <value>{{ master_host }}</value>
   </property>
   <property>
-    <name>hadoop.proxyuser.hive.users</name>
-    <value>*</value>
-  </property>
-  <property>
-    <name>hadoop.proxyuser.hive.groups</name>
-    <value>*</value>
-  </property>
-  <property>
     <name>hadoop.proxyuser.airflow.hosts</name>
     <value>{{ master_host }}</value>
   </property>
+
+  {% for user in ["HTTP", "http", "hdfs", "airflow", "hive"] %}
   <property>
-    <name>hadoop.proxyuser.airflow.users</name>
+    <name>hadoop.proxyuser.{{ user }}.hosts</name>
     <value>*</value>
   </property>
   <property>
-    <name>hadoop.proxyuser.airflow.groups</name>
+    <name>hadoop.proxyuser.{{ user }}.groups</name>
     <value>*</value>
   </property>
+  {% endfor %}
+
 
   {# == Security == #}
-  <property>
-    <name>hadoop.security.authentication</name>
-    <value>kerberos</value>
-  </property>
   <property>
     <name>hadoop.security.authorization</name>
     <value>true</value>
   </property>
   <property>
+    <name>hadoop.security.authentication</name>
+    <value>kerberos</value>
+  </property>
+  <property>
+    <name>hadoop.security.authentication.type</name>
+    <value>kerberos</value>
+  </property>
+  <property>
     <name>hadoop.rpc.protection</name>
     <value>authentication</value>
+  </property>
+
+  <property>
+    <name>hadoop.http.authentication.kerberos.principal</name>
+    <value>HTTP/{{ master_host }}@HADOOP.CONSULTANT.RU</value>
+  </property>
+  <property>
+    <name>hadoop.http.authentication.kerberos.keytab</name>
+    <value>{{ keytab_path }}</value>
+  </property>
+
+
+  <property>
+    <name>hadoop.http.authentication.type</name>
+    <value>kerberos</value>
+  </property>
+  <property>
+    <name>hadoop.http.staticuser.user</name>
+    <value>HTTP</value>
   </property>
 </configuration>

@@ -1,4 +1,4 @@
-{% set principal = "hive/_HOST@CONSULTANT.RU" %}
+{% set principal = "hive/_HOST@HADOOP.CONSULTANT.RU" %}
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 <configuration>
@@ -4225,7 +4225,7 @@
   </property>
   <property>
     <name>hive.server2.webui.spnego.principal</name>
-    <value>HTTP/{{ master_host }}@CONSULTANT.RU</value>
+    <value>HTTP/{{ master_host }}@HADOOP.CONSULTANT.RU</value>
     <description>
       The HiveServer2 WebUI SPNEGO service principal.
       The special string _HOST will be replaced automatically with 

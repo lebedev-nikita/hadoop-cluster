@@ -1,0 +1,16 @@
+[masters] # Ровно один хост
+hadoop-master.consultant.ru local_ip=10.106.63.153 data_dirs='["/mnt/free1"]'
+
+[slaves]
+hadoop-slave1.consultant.ru local_ip=10.106.63.154 data_dirs='["/mnt/free1"]'
+hadoop-slave2.consultant.ru local_ip=10.106.63.155 data_dirs='["/mnt/free1"]'
+hadoop-slave3.consultant.ru local_ip=10.106.63.156 data_dirs='["/mnt/free1"]'
+
+[zk_hosts] # Группа должна содержать хост из "masters"
+hadoop-master.consultant.ru
+hadoop-slave1.consultant.ru
+hadoop-slave2.consultant.ru
+
+[all:vars]
+kdc_local_ip = 10.106.63.153
+http_proxy = svnmirror.consultant.ru:3128
