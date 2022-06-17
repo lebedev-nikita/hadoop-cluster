@@ -3,7 +3,6 @@
 
 - name: start hdfs
   when: not hdfs_is_running
-  # become_user: hdfs
   become: yes
   shell: |
     . /etc/bash.bashrc
