@@ -1,9 +1,9 @@
 - import_role:
     role: common/download_service
   vars:
-    url: https://downloads.apache.org/hive/hive-3.1.2/apache-hive-3.1.2-bin.tar.gz
-    archive_file: apache-hive-3.1.2-bin.tar.gz
-    unarchived_dir: apache-hive-3.1.2-bin
+    url: https://archive.apache.org/dist/hive/hive-3.1.3/apache-hive-3.1.3-bin.tar.gz
+    archive_file: apache-hive-3.1.3-bin.tar.gz
+    unarchived_dir: apache-hive-3.1.3-bin
     link: hive
     owner: hive
 

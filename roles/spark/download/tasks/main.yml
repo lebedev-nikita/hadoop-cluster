@@ -1,7 +1,7 @@
 - import_role:
     role: common/download_service
   vars:
-    url: https://dlcdn.apache.org/spark/spark-3.2.1/spark-3.2.1-bin-hadoop3.2.tgz
+    url: https://archive.apache.org/dist/spark/spark-3.2.1/spark-3.2.1-bin-hadoop3.2.tgz
     archive_file: spark-3.2.1-bin-hadoop3.2.tgz
     unarchived_dir: spark-3.2.1-bin-hadoop3.2
     link: spark

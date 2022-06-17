@@ -1,8 +1,8 @@
 - import_role:
     role: common/download_service
   vars:
-    url: https://archive.apache.org/dist/hbase/2.3.7/hbase-2.3.7-bin.tar.gz
-    archive_file: hbase-2.3.7-bin.tar.gz
-    unarchived_dir: hbase-2.3.7
+    url: https://archive.apache.org/dist/hbase/2.4.9/hbase-2.4.9-bin.tar.gz
+    archive_file: hbase-2.4.9-bin.tar.gz
+    unarchived_dir: hbase-2.4.9
     link: hbase
     owner: hbase
