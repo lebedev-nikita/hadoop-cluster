@@ -1,9 +1,15 @@
 _test:
-# Следующие 3 строчки кода написаны на языке Make, а не Bash.
+# Следующие строки кода написаны на языке Make, а не Bash.
 # Если добавить отступы слева от них, то утилита Make 
 # будет интерпретировать их как код на Bash (а нам это не нужно).
+ifndef ANSIBLE_MODE
+	$(error ENV VARIABLE "ANSIBLE_MODE" IS NOT DEFINED)
+endif
 ifndef INVENTORY
 	$(error ENV VARIABLE "INVENTORY" IS NOT DEFINED)
+endif
+ifeq ("$(wildcard inventory.$(ANSIBLE_MODE).password)", "")
+	$(error FILE "inventory.$(ANSIBLE_MODE).password" DOES NOT EXIST")
 endif
 
 init: _test
