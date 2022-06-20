@@ -5,14 +5,14 @@
 
 > Contorl Node не обязан быть одним из Manged Nodes, но может им быть.
 
+# Несколько кластеров
+
+Данный проект поддерживает управление сразу несколькими кластерами. Например, **dev**, **prod** и **test**.
+Переменные, специфичные для кластера **dev** (например, список узлов кластера), описаны в файлах <u>[inventory.dev](./inventory.dev)</u> и <u>inventory.dev.password</u>.
+
+> В этом README описываются действия для **dev** кластера. Действия для **test** и **prod** полностью аналогичны, достаточно заменить слово **dev** на **test** или **prod** соответственно.
+
 # Первичная настройка Control Node
-
-## Переменные окружения
-
-```bash
-export ANSIBLE_MODE=dev
-export INVENTORY="-i inventory.$ANSIBLE_MODE -i inventory.$ANSIBLE_MODE.password"
-```
 
 ## Настройка SSH
 
@@ -34,13 +34,22 @@ sudo apt install -y ansible make
 ansible-galaxy collection install ansible.posix
 ```
 
-3. Прописать хосты и соответствующие им переменные в [inventory.ini](./inventory.ini)
-4. Создать в корне проекта файл `inventory.password.ini` со следующим содержимым, заменив <BECOME_PASSWORD> на пароль пользователя, к которому происходит подключение по ssh
+3. Прописать хосты и соответствующие им переменные в [inventory.dev](./inventory.dev)
+4. Создать в корне проекта файл `inventory.dev.password` со следующим содержимым, заменив <BECOME_PASSWORD> на пароль пользователя, к которому происходит подключение по ssh
 
 ```ini
 [all:vars]
 ansible_become_password = <BECOME_PASSWORD>
 hive_db_password = hive
+```
+
+## Переменные окружения
+
+Меняя значение ANSIBLE_MODE, можно переключаться между управлением различными кластерами.
+
+```bash
+export ANSIBLE_MODE=dev
+export INVENTORY="-i inventory.$ANSIBLE_MODE -i inventory.$ANSIBLE_MODE.password"
 ```
 
 # Первичная настройка Managed Nodes
@@ -54,88 +63,42 @@ hive_db_password = hive
 Некоторые плейбуки принимают переменные:
 
 - `services` - список сервисов, к которым будет применяться плейбук. Допустимые элементы списка: "hadoop", "hbase", "spark", "hive". Если переменная не указана, плейбук применится ко всем сервисам.
-- `need_format` - флаг, используемый только один раз, при первичной инициализации кластера. Форматирует NameNode. Допустимые значения true, false. Значение по умолчанию: false.
+- `need_format` - флаг, используемый только один раз, при первичной инициализации кластера. Использование этого флага на уже запущенном кластере может привести к потере данных. Значение по умолчанию: false.
 
 # Плейбуки
 
+Не рекомендуется запускать плейбуки вручную. Лучше запускать их, вызывая один из таргетов, описанных в Makefile. Если в Makefile отсутствует подходящий таргет, следует его добавить.
+
 ```bash
 # Плейбуки запускаются следующей командой:
-ansible-playbook <playbook_name>
+ansible-playbook $INVENTORY <playbook_name>
 
 # В плейбуки можно передавать переменные в формате JSON:
-ansible-playbook <playbook_name> -e '{ "services": ["hadoop", "hive", "spark"], "need_format": false }'
+ansible-playbook $INVENTORY <playbook_name> -e '{ "services": ["hadoop", "hive", "spark"], "need_format": false }'
 ```
 
-## `_init_hosts`
+# Makefile
 
-Плейбук `_init_hosts` подготваливает Managed Nodes к последующей установке сервисов. Также он устанавливает Zookeeper на Managed Nodes из группы zk_hosts (см. [inventory.ini](./inventory.ini)).
+Таргеты в [Makefile](./Makefile) объединяют несколько последовательных вызовов плейбуков, соответствующих типичному сценарию взаимодействия с кластером.
 
-## `_download`
-
-Плейбук `download` скачивает и разархивирует дистрибутивы сервисов на каждый Managed Node в директорию /opt.
-
-**Принимает переменные:**
-
-- `services`
-
-## `_configure`
-
-Плейбук `_configure` настраивает скачанные дистрибутивы сервисов, помещая в них файлы файлы конфигурации. Файлы конфигурации генерируются из шаблонов, лежащих в `<service_name>/configure/templates`, путем подстановки переменных, определенных в [inventory.ini](./inventory.ini) и [group_vars](./group_vars/all.yml).
-
-**Принимает переменные:**
-
-- `services`
-
-## `_start`
-
-Плейбук `_start` запускает сервисы.
-
-**Принимает переменные:**
-
-- `services`
-- `need_format`
-
-## `_stop`
-
-Плейбук `_stop` останавливает сервисы.
-
-**Принимает переменные:**
-
-- `services`
-
-## `_refresh_queues`
-
-Плейбук `_refresh_queues` позволяет yarn подтянуть очереди из `/opt/hadoop/etc/hadoop/yarn-site.xml` без перезапуска всего кластера.
-
-## `_dangerous_clean`
-
-Плейбук `_dangerous_clean` полностью удаляет все сервисы и данные с кластера. Использовать эту команду в продакшене не рекомендуется.
-
-# Скрипты
-
-Скрипты объединяют несколько последовательных вызовов плейбуков, соответствующих типичному сценарию взаимодействия с кластером. Для более тонкой работы с кластером рекомендуется запускать плейбуки напрямую, как это показано в предыдущем разделе.
-
-- `make dangerous_init_with_formatting` - Инициализировать и запустить hadoop-кластер с форматированием NameNode. Следует использовать только для первичной установки кластера.
 - `make init` - Инициализировать и запустить hadoop-кластер. Следует использовать при добавлении в кластер новых узлов или других достаточно серьезных изменениях. Перед вызовом скрипта кластер должен быть остановлен.
+- `make DANGROUS_start_with_formatting` - Запустить hadoop-кластер с форматированием NameNode. Следует использовать только для первичной установки кластера.
 - `make stop` - Остановить hadoop-кластер.
 - `make start` - Запустить hadoop-кластер.
-- `make dangerous_clean` - Очистить машины.
+
+Полный список таргетов доступен в [Makefile](./Makefile).
 
 # Сценарии использования
 
+## Первичная установка
+
+1. `make init`
+2. `make DANGROUS_start_with_formatting`
+
 ## Добавить новую машину
 
-1. `make stop`
-2. Добавить машину в [inventory.ini](./inventory.ini)
-3. `make init`
-
-## Изменить конфиги
-
-1. `make stop`
-2. Изменить соответствующий файл с конфигами в этом проекте
-3. `ansible-playbook _configure.yml`
-4. `make start`
-5. Закоммитить и запушить изменения
+1. Добавить новую машину в inventory.dev
+2. `make restart`
 
 # Адреса UI
 

@@ -1,4 +1,2 @@
-# NOTE: данные hdfs: /user/hive/warehouse удаляются вместе с hdfs
-
 - name: remove hive dirs
   shell: rm -rf /opt/*hive*

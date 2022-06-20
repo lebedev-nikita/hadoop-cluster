@@ -23,14 +23,20 @@ start: _test
 stop: _test
 	ansible-playbook $(INVENTORY) _stop.yml
 
+configure: _test
+	ansible-playbook $(INVENTORY) _configure.yml
+
 refresh_queues: _test
 	ansible-playbook $(INVENTORY) _configure.yml -e '{ "services": ["hadoop"] }' && \
 	ansible-playbook $(INVENTORY) _refresh_queues.yml
 
-start_with_formatting_DANGEROUS: _test
+DANGROUS_start_with_formatting: _test
 	ansible-playbook $(INVENTORY) _start.yml -e '{ "need_format": true }'
 
-restart_DANGEROUS: stop
-	ansible-playbook $(INVENTORY) _dangerous_clean_data.yml
-	ansible-playbook $(INVENTORY) _configure.yml
-	ansible-playbook $(INVENTORY) _start.yml -e '{ "need_format": true }'
+restart: stop init start
+reconfigure: stop configure start
+
+# DANGROUS_restart_with_formatting: stop
+# 	ansible-playbook $(INVENTORY) _clean_data_DANGEROUS.yml
+# 	ansible-playbook $(INVENTORY) _configure.yml
+# 	ansible-playbook $(INVENTORY) _start.yml -e '{ "need_format": true }'

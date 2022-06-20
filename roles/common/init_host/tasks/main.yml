@@ -16,7 +16,7 @@
   user:
     name: hadoop
     shell: /bin/bash
-    umask: "002"
+    umask: "007"
 
 - name: configure "root"
   become: yes
@@ -34,7 +34,7 @@
       - hadoop
     append: yes
     shell: /bin/bash
-    umask: "002"
+    umask: "007"
   loop:
     - zookeeper
     - hdfs
