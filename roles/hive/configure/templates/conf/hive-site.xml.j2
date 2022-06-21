@@ -1,4 +1,5 @@
-{% set principal = "hive/_HOST@HADOOP.CONSULTANT.RU" %}
+{% set principal = "hive/" + master_host + "@HADOOP.CONSULTANT.RU" %}
+{% set spnego_principal = "HTTP/" + master_host + "@HADOOP.CONSULTANT.RU" %}
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 <configuration>
@@ -4215,17 +4216,17 @@
   </property>
   <property>
     <name>hive.server2.webui.use.spnego</name>
-    <value>false</value>
+    <value>true</value>
     <description>If true, the HiveServer2 WebUI will be secured with SPNEGO. Clients must authenticate with Kerberos.</description>
   </property>
   <property>
     <name>hive.server2.webui.spnego.keytab</name>
-    <value />
+    <value>{{ keytab_path }}</value>
     <description>The path to the Kerberos Keytab file containing the HiveServer2 WebUI SPNEGO service principal.</description>
   </property>
   <property>
     <name>hive.server2.webui.spnego.principal</name>
-    <value>HTTP/{{ master_host }}@HADOOP.CONSULTANT.RU</value>
+    <value>{{ spnego_principal }}</value>
     <description>
       The HiveServer2 WebUI SPNEGO service principal.
       The special string _HOST will be replaced automatically with 
@@ -4664,7 +4665,7 @@
   </property>
   <property>
     <name>hive.server2.authentication.spnego.keytab</name>
-    <value />
+    <value>{{ keytab_path }}</value>
     <description>
       keytab file for SPNego principal, optional,
       typical value would look like /etc/security/keytabs/spnego.service.keytab,
@@ -4680,7 +4681,7 @@
   </property>
   <property>
     <name>hive.server2.authentication.spnego.principal</name>
-    <value />
+    <value>{{ spnego_principal }}</value>
     <description>
       SPNego service principal, optional,
       typical value would look like HTTP/_HOST@EXAMPLE.COM

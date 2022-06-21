@@ -58,6 +58,10 @@ export INVENTORY="-i inventory.$ANSIBLE_MODE -i inventory.$ANSIBLE_MODE.password
   sudo apt install -y python python3
 ```
 
+# Первичная настройка Kerberos
+
+Этот Ansible-проект не настраивает Kerberos. Инструкция по настройке Kerberos доступна [по ссылке](./doc/kerberos.md#настройка-kdc)
+
 # Переменные
 
 Некоторые плейбуки принимают переменные:
@@ -93,12 +97,17 @@ ansible-playbook $INVENTORY <playbook_name> -e '{ "services": ["hadoop", "hive",
 ## Первичная установка
 
 1. `make init`
-2. `make DANGROUS_start_with_formatting`
+2. Создать keytab-файлы на каждом хосте ([инструкция](./doc/kerberos.md#создание-keytab-ов))
+3. `make DANGROUS_start_with_formatting`
 
 ## Добавить новую машину
 
-1. Добавить новую машину в inventory.dev
-2. `make restart`
+1. Добавить в Kerberos недостающих пользователей ([инструкция](./doc/kerberos.md#создание-пользователей))
+2. Добавить новый хост в inventory.dev
+3. `make stop`
+4. `make init`
+5. Создать keytab-файл на новом хосте
+6. `make start`
 
 # Адреса UI
 
