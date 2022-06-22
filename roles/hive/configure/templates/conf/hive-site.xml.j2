@@ -1,5 +1,5 @@
-{% set principal = "hive/" + master_host + "@HADOOP.CONSULTANT.RU" %}
-{% set spnego_principal = "HTTP/" + master_host + "@HADOOP.CONSULTANT.RU" %}
+{% set hive_principal = "hive/_HOST@HADOOP.CONSULTANT.RU" %}
+{% set spnego_principal = "HTTP/_HOST@HADOOP.CONSULTANT.RU" %}
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 <configuration>
@@ -28,7 +28,7 @@
   </property>
   <property>
     <name>hive.metastore.kerberos.principal</name>
-    <value>{{ principal }}</value>
+    <value>{{ hive_principal }}</value>
     <description>
       The service principal for the metastore Thrift server. 
       The special string _HOST will be replaced automatically with the correct host name.
@@ -37,25 +37,10 @@
   <property>
     <name>hive.zookeeper.quorum</name>
     <value>{{ groups['zk_hosts'] | join(',') }}</value>
-    <description>
-      List of ZooKeeper servers to talk to. This is needed for: 
-      1. Read/write locks - when hive.lock.manager is set to 
-      org.apache.hadoop.hive.ql.lockmgr.zookeeper.ZooKeeperHiveLockManager, 
-      2. When HiveServer2 supports service discovery via Zookeeper.
-      3. For delegation token storage if zookeeper store is used, if
-      hive.cluster.delegation.token.store.zookeeper.connectString is not set
-      4. LLAP daemon registry service
-      5. Leader selection for privilege synchronizer
-    </description>
   </property>
   <property>
     <name>hive.zookeeper.client.port</name>
     <value>2181</value>
-    <description>
-      The port of ZooKeeper servers to talk to.
-      If the list of Zookeeper servers specified in hive.zookeeper.quorum
-      does not contain port numbers, this value is used.
-    </description>
   </property>
   <property>
     <name>hive.server2.authentication.kerberos.keytab</name>
@@ -64,8 +49,76 @@
   </property>
   <property>
     <name>hive.server2.authentication.kerberos.principal</name>
-    <value>{{ principal }}</value>
+    <value>{{ hive_principal }}</value>
     <description>Kerberos server principal</description>
+  </property>
+
+  <property>
+    <name>hive.server2.webui.host</name>
+    <value>{{ master_host }}</value>
+    <description>The host address the HiveServer2 WebUI will listen on</description>
+  </property>
+  <property>
+    <name>hive.server2.webui.port</name>
+    <value>10002</value>
+    <description>The port the HiveServer2 WebUI will listen on. This can beset to 0 or a negative integer to disable the web UI</description>
+  </property>
+
+  <property>
+    <name>hive.server2.webui.use.spnego</name>
+    <value>true</value>
+    <description>If true, the HiveServer2 WebUI will be secured with SPNEGO. Clients must authenticate with Kerberos.</description>
+  </property>
+  <property>
+    <name>hive.server2.webui.spnego.keytab</name>
+    <value>{{ keytab_path }}</value>
+    <description>The path to the Kerberos Keytab file containing the HiveServer2 WebUI SPNEGO service principal.</description>
+  </property>
+  <property>
+    <name>hive.server2.webui.spnego.principal</name>
+    <value>{{ spnego_principal }}</value>
+    <description>
+      The HiveServer2 WebUI SPNEGO service principal.
+      The special string _HOST will be replaced automatically with 
+      the value of hive.server2.webui.host or the correct host name.
+    </description>
+  </property>
+
+  <property>
+    <name>hive.server2.authentication.spnego.keytab</name>
+    <value>{{ keytab_path }}</value>
+    <description>
+      keytab file for SPNego principal, optional,
+      typical value would look like /etc/security/keytabs/spnego.service.keytab,
+      This keytab would be used by HiveServer2 when Kerberos security is enabled and 
+      HTTP transport mode is used.
+      This needs to be set only if SPNEGO is to be used in authentication.
+      SPNego authentication would be honored only if valid
+        hive.server2.authentication.spnego.principal
+      and
+        hive.server2.authentication.spnego.keytab
+      are specified.
+    </description>
+  </property>
+  <property>
+    <name>hive.server2.authentication.spnego.principal</name>
+    <value>{{ spnego_principal }}</value>
+    <description>
+      SPNego service principal, optional,
+      typical value would look like HTTP/_HOST@EXAMPLE.COM
+      SPNego service principal would be used by HiveServer2 when Kerberos security is enabled
+      and HTTP transport mode is used.
+      This needs to be set only if SPNEGO is to be used in authentication.
+    </description>
+  </property>
+
+  <property>
+    <name>hive.server2.transport.mode</name>
+    <value>binary</value>
+    <description>
+      Expects one of [binary, http].
+      Transport mode of HiveServer2.
+    </description>
   </property>
 
   {# == Defaults: == #}
@@ -4141,14 +4194,6 @@
     </description>
   </property>
   <property>
-    <name>hive.server2.transport.mode</name>
-    <value>binary</value>
-    <description>
-      Expects one of [binary, http].
-      Transport mode of HiveServer2.
-    </description>
-  </property>
-  <property>
     <name>hive.server2.thrift.bind.host</name>
     <value />
     <description>Bind host on which to run the HiveServer2 Thrift service.</description>
@@ -4185,16 +4230,6 @@
     </description>
   </property>
   <property>
-    <name>hive.server2.webui.host</name>
-    <value>0.0.0.0</value>
-    <description>The host address the HiveServer2 WebUI will listen on</description>
-  </property>
-  <property>
-    <name>hive.server2.webui.port</name>
-    <value>10002</value>
-    <description>The port the HiveServer2 WebUI will listen on. This can beset to 0 or a negative integer to disable the web UI</description>
-  </property>
-  <property>
     <name>hive.server2.webui.max.threads</name>
     <value>50</value>
     <description>The max HiveServer2 WebUI threads</description>
@@ -4213,25 +4248,6 @@
     <name>hive.server2.webui.keystore.password</name>
     <value />
     <description>SSL certificate keystore password for HiveServer2 WebUI.</description>
-  </property>
-  <property>
-    <name>hive.server2.webui.use.spnego</name>
-    <value>true</value>
-    <description>If true, the HiveServer2 WebUI will be secured with SPNEGO. Clients must authenticate with Kerberos.</description>
-  </property>
-  <property>
-    <name>hive.server2.webui.spnego.keytab</name>
-    <value>{{ keytab_path }}</value>
-    <description>The path to the Kerberos Keytab file containing the HiveServer2 WebUI SPNEGO service principal.</description>
-  </property>
-  <property>
-    <name>hive.server2.webui.spnego.principal</name>
-    <value>{{ spnego_principal }}</value>
-    <description>
-      The HiveServer2 WebUI SPNEGO service principal.
-      The special string _HOST will be replaced automatically with 
-      the value of hive.server2.webui.host or the correct host name.
-    </description>
   </property>
   <property>
     <name>hive.server2.webui.max.historic.queries</name>
@@ -4662,33 +4678,6 @@
     <name>hive.server2.authentication.client.kerberos.principal</name>
     <value />
     <description>Kerberos principal used by the HA hive_server2s.</description>
-  </property>
-  <property>
-    <name>hive.server2.authentication.spnego.keytab</name>
-    <value>{{ keytab_path }}</value>
-    <description>
-      keytab file for SPNego principal, optional,
-      typical value would look like /etc/security/keytabs/spnego.service.keytab,
-      This keytab would be used by HiveServer2 when Kerberos security is enabled and 
-      HTTP transport mode is used.
-      This needs to be set only if SPNEGO is to be used in authentication.
-      SPNego authentication would be honored only if valid
-        hive.server2.authentication.spnego.principal
-      and
-        hive.server2.authentication.spnego.keytab
-      are specified.
-    </description>
-  </property>
-  <property>
-    <name>hive.server2.authentication.spnego.principal</name>
-    <value>{{ spnego_principal }}</value>
-    <description>
-      SPNego service principal, optional,
-      typical value would look like HTTP/_HOST@EXAMPLE.COM
-      SPNego service principal would be used by HiveServer2 when Kerberos security is enabled
-      and HTTP transport mode is used.
-      This needs to be set only if SPNEGO is to be used in authentication.
-    </description>
   </property>
   <property>
     <name>hive.server2.authentication.ldap.url</name>

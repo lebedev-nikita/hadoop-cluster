@@ -21,6 +21,5 @@
     dest: /opt/hive/jdbc/postgresql-jdbc.jar
 
 - name: remove duplicate log4j jar
-  file:
-    path: /opt/hive/lib/log4j-slf4j-impl-2.10.0.jar
-    state: absent
+  become_user: hive
+  shell: rm -rf /opt/hive/lib/log4j-slf4j-impl-*
