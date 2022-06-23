@@ -2,5 +2,5 @@
   become_user: spark
   shell: |
     . /etc/bash.bashrc
-    kinit spark/{{ inventory_hostname }}@HADOOP.CONSULTANT.RU -kt {{ keytab_path }}
+    kinit spark/{{ inventory_hostname }} -kt {{ keytab_path }}
     /opt/hadoop/bin/hdfs dfs -mkdir -p /spark/logs

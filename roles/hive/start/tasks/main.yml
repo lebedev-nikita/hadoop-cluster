@@ -6,5 +6,5 @@
   become_user: hive
   shell: |
     . /etc/bash.bashrc
-    kinit hive/{{ inventory_hostname }}@HADOOP.CONSULTANT.RU -kt {{ keytab_path }}
+    kinit hive/{{ inventory_hostname }} -kt {{ keytab_path }}
     nohup /opt/hive/bin/hiveserver2 > /opt/hive/logs/hive.nohup.out &

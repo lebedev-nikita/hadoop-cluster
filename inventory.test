@@ -12,5 +12,5 @@ hadoop-slave1.consultant.ru
 hadoop-slave2.consultant.ru
 
 [all:vars]
-kdc_local_ip = 10.106.63.153
+kdc_host = hadoop-master.consultant.ru
 http_proxy = svnmirror.consultant.ru:3128

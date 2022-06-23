@@ -12,5 +12,5 @@ host2.consultant.ru
 host3.consultant.ru
 
 [all:vars]
-kdc_local_ip = 10.129.0.24
+kdc_host = ""
 http_proxy = ""

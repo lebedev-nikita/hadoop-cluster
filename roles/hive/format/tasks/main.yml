@@ -30,7 +30,7 @@
   become_user: hive
   shell: |
     . /etc/bash.bashrc
-    kinit hive/{{ inventory_hostname }}@HADOOP.CONSULTANT.RU -kt {{ keytab_path }}
+    kinit hive/{{ inventory_hostname }} -kt {{ keytab_path }}
     {{ item }}
   loop:
     - /opt/hadoop/bin/hdfs dfs -mkdir -p /user/hive/warehouse

@@ -4,9 +4,3 @@
 {% for host in groups['all'] %}
 {{ hostvars[host].local_ip }}   {{ hostvars[host].inventory_hostname }}
 {% endfor %}
-
-{# 
-  Должно быть объявлено после хостов из группы 'all',
-  _HOST резолвился в один из них, а не в kdc.consultant.ru
-#}
-{{ kdc_local_ip }}  kdc.consultant.ru

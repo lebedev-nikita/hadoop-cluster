@@ -4,15 +4,7 @@
 
 ### Установка и первичная настройка
 
-Добавить строку в **/etc/hosts**:
-
-```
-<this_host_ip>    kdc.consultant.ru
-```
-
-Выполнить команды:
-
-```
+```bash
 sudo apt update
 sudo apt-get install -y krb5-kdc krb5-admin-server
 ```
