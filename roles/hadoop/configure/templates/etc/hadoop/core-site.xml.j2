@@ -15,7 +15,7 @@
     <value>{{ master_host }}</value>
   </property>
 
-  {% for user in ["HTTP", "http", "hdfs", "airflow", "hive"] %}
+  {% for user in ["HTTP", "hdfs", "hive", "airflow"] %}
   <property>
     <name>hadoop.proxyuser.{{ user }}.hosts</name>
     <value>*</value>
@@ -44,16 +44,20 @@
     <name>hadoop.rpc.protection</name>
     <value>authentication</value>
   </property>
+  <property>
+    <name>ipc.client.fallback-to-simple-auth-allowed</name>
+    <value>true</value> 
+    <description>Позволяет копировать данные из незащищенного кластера в защищенный</description>
+  </property>
 
   <property>
     <name>hadoop.http.authentication.kerberos.principal</name>
-    <value>HTTP/{{ master_host }}@HADOOP.CONSULTANT.RU</value>
+    <value>HTTP/{{ master_host }}@{{ kdc_realm }}</value>
   </property>
   <property>
     <name>hadoop.http.authentication.kerberos.keytab</name>
     <value>{{ keytab_path }}</value>
   </property>
-
 
   <property>
     <name>hadoop.http.authentication.type</name>

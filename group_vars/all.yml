@@ -4,3 +4,6 @@ is_master_host: "{{ inventory_hostname == master_host }}"
 
 keytab_path: /etc/security/krb5.keytab
 hive_db_name: hive_metastore
+
+use_erasure_coding: False
+erasure_coding_policy: RS-3-2-1024k

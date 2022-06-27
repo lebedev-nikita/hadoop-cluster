@@ -1,5 +1,5 @@
-{% set hive_principal = "hive/_HOST@HADOOP.CONSULTANT.RU" %}
-{% set spnego_principal = "HTTP/_HOST@HADOOP.CONSULTANT.RU" %}
+{% set hive_principal = "hive/_HOST@" + kdc_realm %}
+{% set spnego_principal = "HTTP/_HOST@" + kdc_realm %}
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 <configuration>
@@ -552,7 +552,7 @@
   </property>
   <property>
     <name>hive.metastore.warehouse.dir</name>
-    <value>/user/hive/warehouse</value>
+    <value>/hive/warehouse</value>
     <description>location of default database for the warehouse</description>
   </property>
   <property>

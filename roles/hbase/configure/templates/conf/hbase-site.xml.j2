@@ -1,4 +1,4 @@
-{% set principal = "hbase/_HOST@HADOOP.CONSULTANT.RU" %}
+{% set principal = "hbase/_HOST@" + kdc_realm %}
 <configuration>
   <property>
     <name>hbase.cluster.distributed</name>

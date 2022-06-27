@@ -13,4 +13,5 @@ hadoop-slave2.consultant.ru
 
 [all:vars]
 kdc_host = ""
+kdc_realm = HADOOP_PROD.CONSULTANT.RU
 http_proxy = svnmirror.consultant.ru:3128

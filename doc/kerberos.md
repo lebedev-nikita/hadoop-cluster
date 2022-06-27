@@ -6,15 +6,15 @@
 
 ```bash
 sudo apt update
-sudo apt-get install -y krb5-kdc krb5-admin-server
+sudo apt install -y krb5-kdc krb5-admin-server
 ```
 
-<img src="./assets/krb_1.png" width="400" />
-<img src="./assets/krb_2.png" width="400" />
-<img src="./assets/krb_3.png" width="400" />
+<img src="./assets/krb_1.png" />
+<img src="./assets/krb_2.png" />
+<img src="./assets/krb_3.png" />
 
 Выскочит ошибка. Это нормально.  
-<img src="./assets/krb_error.png" width="400" />
+<img src="./assets/krb_error.png" />
 
 ```bash
 sudo krb5_newrealm
@@ -24,14 +24,14 @@ sudo krb5_newrealm
 ```bash
 sudo kadmin.local
 # Создать пользователя-админа (подставить имя вместо <your_name>). Придумать и ввести пароль.
-addprinc <your_name>/admin@HADOOP.CONSULTANT.RU
+addprinc <your_name>/admin
 quit
 ```
 
 Добавить строку в **/etc/krb5kdc/kadm5.acl**:
 
 ```
-<your_name>/admin@HADOOP.CONSULTANT.RU      *
+<your_name>/admin      *
 ```
 
 ```bash
@@ -41,7 +41,7 @@ sudo systemctl restart krb5-admin-server
 Проверить, что всё работает:
 
 ```bash
-kinit <your_name>/admin@HADOOP.CONSULTANT.RU
+kinit <your_name>/admin
 klist
 ```
 
@@ -50,7 +50,7 @@ klist
 Логинимся как админ
 
 ```bash
-kinit <your_name>/admin@HADOOP.CONSULTANT.RU
+kinit <your_name>/admin
 klist
 ```
 
@@ -60,31 +60,31 @@ klist
 ```bash
 kadmin
 
-addprinc hdfs/hadoop-master.consultant.ru@HADOOP.CONSULTANT.RU
-addprinc hdfs/hadoop-slave1.consultant.ru@HADOOP.CONSULTANT.RU
-addprinc hdfs/hadoop-slave2.consultant.ru@HADOOP.CONSULTANT.RU
-addprinc hdfs/hadoop-slave3.consultant.ru@HADOOP.CONSULTANT.RU
+addprinc hdfs/hadoop-master.consultant.ru
+addprinc hdfs/hadoop-slave1.consultant.ru
+addprinc hdfs/hadoop-slave2.consultant.ru
+addprinc hdfs/hadoop-slave3.consultant.ru
 
-addprinc yarn/hadoop-master.consultant.ru@HADOOP.CONSULTANT.RU
-addprinc yarn/hadoop-slave1.consultant.ru@HADOOP.CONSULTANT.RU
-addprinc yarn/hadoop-slave2.consultant.ru@HADOOP.CONSULTANT.RU
-addprinc yarn/hadoop-slave3.consultant.ru@HADOOP.CONSULTANT.RU
+addprinc yarn/hadoop-master.consultant.ru
+addprinc yarn/hadoop-slave1.consultant.ru
+addprinc yarn/hadoop-slave2.consultant.ru
+addprinc yarn/hadoop-slave3.consultant.ru
 
-addprinc mapred/hadoop-master.consultant.ru@HADOOP.CONSULTANT.RU
-addprinc mapred/hadoop-slave1.consultant.ru@HADOOP.CONSULTANT.RU
-addprinc mapred/hadoop-slave2.consultant.ru@HADOOP.CONSULTANT.RU
-addprinc mapred/hadoop-slave3.consultant.ru@HADOOP.CONSULTANT.RU
+addprinc mapred/hadoop-master.consultant.ru
+addprinc mapred/hadoop-slave1.consultant.ru
+addprinc mapred/hadoop-slave2.consultant.ru
+addprinc mapred/hadoop-slave3.consultant.ru
 
-addprinc hbase/hadoop-master.consultant.ru@HADOOP.CONSULTANT.RU
-addprinc hbase/hadoop-slave1.consultant.ru@HADOOP.CONSULTANT.RU
-addprinc hbase/hadoop-slave2.consultant.ru@HADOOP.CONSULTANT.RU
-addprinc hbase/hadoop-slave3.consultant.ru@HADOOP.CONSULTANT.RU
+addprinc hbase/hadoop-master.consultant.ru
+addprinc hbase/hadoop-slave1.consultant.ru
+addprinc hbase/hadoop-slave2.consultant.ru
+addprinc hbase/hadoop-slave3.consultant.ru
 
 # Следующие сервисы разворачиваются только на hadoop-master
 # HTTP - имя пользователя-сервиса, участвующего в SPNEGO-аутентификации.
-addprinc HTTP/hadoop-master.consultant.ru@HADOOP.CONSULTANT.RU
-addprinc spark/hadoop-master.consultant.ru@HADOOP.CONSULTANT.RU
-addprinc hive/hadoop-master.consultant.ru@HADOOP.CONSULTANT.RU
+addprinc HTTP/hadoop-master.consultant.ru
+addprinc spark/hadoop-master.consultant.ru
+addprinc hive/hadoop-master.consultant.ru
 
 quit
 ```
@@ -101,15 +101,15 @@ quit
 sudo ktutil
 
 # Эти учетные записи нужно добавить на каждом хосте, заменив hadoop-master на имя хоста.
-addent -password -p hdfs/hadoop-master.consultant.ru@HADOOP.CONSULTANT.RU -k 1 -e aes256-cts
-addent -password -p yarn/hadoop-master.consultant.ru@HADOOP.CONSULTANT.RU -k 1 -e aes256-cts
-addent -password -p mapred/hadoop-master.consultant.ru@HADOOP.CONSULTANT.RU -k 1 -e aes256-cts
-addent -password -p hbase/hadoop-master.consultant.ru@HADOOP.CONSULTANT.RU -k 1 -e aes256-cts
+addent -password -p hdfs/hadoop-master.consultant.ru -k 1 -e aes256-cts
+addent -password -p yarn/hadoop-master.consultant.ru -k 1 -e aes256-cts
+addent -password -p mapred/hadoop-master.consultant.ru -k 1 -e aes256-cts
+addent -password -p hbase/hadoop-master.consultant.ru -k 1 -e aes256-cts
 
 # Эти учетные записи нужно добавить только на хосте hadoop-master
-addent -password -p HTTP/hadoop-master.consultant.ru@HADOOP.CONSULTANT.RU -k 1 -e aes256-cts
-addent -password -p spark/hadoop-master.consultant.ru@HADOOP.CONSULTANT.RU -k 1 -e aes256-cts
-addent -password -p hive/hadoop-master.consultant.ru@HADOOP.CONSULTANT.RU -k 1 -e aes256-cts
+addent -password -p HTTP/hadoop-master.consultant.ru -k 1 -e aes256-cts
+addent -password -p spark/hadoop-master.consultant.ru -k 1 -e aes256-cts
+addent -password -p hive/hadoop-master.consultant.ru -k 1 -e aes256-cts
 
 wkt /etc/security/krb5.keytab
 

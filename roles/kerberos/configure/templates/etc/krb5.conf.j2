@@ -8,7 +8,7 @@
   fcc-mit-ticketflags = true
 
 [libdefaults]
-  default_realm = HADOOP.CONSULTANT.RU
+  default_realm = {{ kdc_realm }}
   dns_lookup_realm = false
   dns_lookup_kdc = false
   ticket_lifetime = 24h
@@ -16,14 +16,14 @@
   forwardable = true
 
 [realms]
-  HADOOP.CONSULTANT.RU = {
+  {{ kdc_realm }} = {
     kdc = {{ kdc_host }}
     admin_server = {{ kdc_host }}
   }
 
 [domain_realm]
-  .consultant.ru = HADOOP.CONSULTANT.RU
-  consultant.ru = HADOOP.CONSULTANT.RU
+  .consultant.ru = {{ kdc_realm }}
+  consultant.ru = {{ kdc_realm }}
 
 [logging]
   default = FILE:/var/log/krb5libs.log

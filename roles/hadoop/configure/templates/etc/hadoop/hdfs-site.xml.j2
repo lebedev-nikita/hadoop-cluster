@@ -17,6 +17,13 @@
     <value>hadoop</value>
   </property>
 
+  {% if use_erasure_coding %}
+  <property>
+    <name>dfs.namenode.ec.system.default.policy</name>
+    <value>{{ erasure_coding_policy }}</value>
+  </property>
+  {% endifif %}
+
   {# == Security == #}
   <property>
     <name>dfs.datanode.address</name>
@@ -34,13 +41,13 @@
   </property>
   <property>
     <name>dfs.{{ service }}.kerberos.principal</name>
-    <value>hdfs/_HOST@HADOOP.CONSULTANT.RU</value>
+    <value>hdfs/_HOST@{{ kdc_realm }}</value>
   </property>
   {% endfor %}
 
   <property>
     <name>dfs.web.authentication.kerberos.principal</name>
-    <value>HTTP/_HOST@HADOOP.CONSULTANT.RU</value>
+    <value>HTTP/_HOST@{{ kdc_realm }}</value>
   </property>
   <property>
     <name>dfs.web.authentication.kerberos.keytab</name>

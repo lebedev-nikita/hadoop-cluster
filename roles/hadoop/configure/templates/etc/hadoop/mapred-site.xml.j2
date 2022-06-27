@@ -1,4 +1,4 @@
-{% set principal = "mapred/_HOST@HADOOP.CONSULTANT.RU" %}
+{% set principal = "mapred/_HOST@" + kdc_realm %}
 <configuration>
   <property>
     <name>mapreduce.job.user.name</name>
