@@ -1,7 +1,7 @@
 - import_role:
     role: common/download_service
   vars:
-    url: https://archive.apache.org/dist/zookeeper/zookeeper-3.8.0/apache-zookeeper-3.8.0-bin.tar.gz
+    url: https://github.com/lebedev-nikita/hadoop-cdn/raw/main/apache-zookeeper-3.8.0-bin.tar.gz
     archive_file: apache-zookeeper-3.8.0-bin.tar.gz
     unarchived_dir: apache-zookeeper-3.8.0-bin
     link: zookeeper

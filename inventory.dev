@@ -1,11 +1,11 @@
 [masters] # Ровно один хост
-host1.consultant.ru local_ip=10.129.0.13 data_dirs='["/data"]'
+host1.consultant.ru local_ip=10.129.0.21 data_dirs='["/data"]'
 
 [slaves]
-host2.consultant.ru local_ip=10.129.0.23 data_dirs='["/data"]'
-host3.consultant.ru local_ip=10.129.0.27 data_dirs='["/data"]'
-host4.consultant.ru local_ip=10.129.0.18 data_dirs='["/data"]'
-host5.consultant.ru local_ip=10.129.0.39 data_dirs='["/data"]'
+host2.consultant.ru local_ip=10.129.0.11 data_dirs='["/data"]'
+host3.consultant.ru local_ip=10.129.0.18 data_dirs='["/data"]'
+host4.consultant.ru local_ip=10.129.0.29 data_dirs='["/data"]'
+host5.consultant.ru local_ip=10.129.0.28 data_dirs='["/data"]'
 
 [zk_hosts] # Группа должна содержать хост из "masters"
 host1.consultant.ru
@@ -16,4 +16,4 @@ host3.consultant.ru
 kdc_host = 10.129.0.15
 kdc_realm = HADOOP_DEV.CONSULTANT.RU
 http_proxy = ""
-use_erasure_coding = true
+use_erasure_coding = false

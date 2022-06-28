@@ -1,7 +1,7 @@
 - import_role:
     role: common/download_service
   vars:
-    url: https://archive.apache.org/dist/hbase/2.4.9/hbase-2.4.9-bin.tar.gz
+    url: https://github.com/lebedev-nikita/hadoop-cdn/raw/main/hbase-2.4.9-bin.tar.gz
     archive_file: hbase-2.4.9-bin.tar.gz
     unarchived_dir: hbase-2.4.9
     link: hbase

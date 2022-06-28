@@ -1,7 +1,7 @@
 - import_role:
     role: common/download_service
   vars:
-    url: https://archive.apache.org/dist/hadoop/common/hadoop-3.3.3/hadoop-3.3.3.tar.gz
+    url: https://github.com/lebedev-nikita/hadoop-cdn/raw/main/hadoop-3.3.3.tar.gz
     archive_file: hadoop-3.3.3.tar.gz
     unarchived_dir: hadoop-3.3.3
     link: hadoop

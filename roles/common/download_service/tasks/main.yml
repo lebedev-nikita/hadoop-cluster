@@ -16,6 +16,7 @@
   get_url:
     url: "{{ url }}"
     dest: "{{ _base }}/{{ archive_file }}"
+    timeout: 60
   environment:
     http_proxy: "{{ http_proxy }}"
     https_proxy: "{{ http_proxy }}"
