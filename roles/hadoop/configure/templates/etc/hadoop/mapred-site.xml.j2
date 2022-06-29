@@ -1,4 +1,3 @@
-{% set principal = "mapred/_HOST@" + kdc_realm %}
 <configuration>
   <property>
     <name>mapreduce.job.user.name</name>
@@ -25,13 +24,15 @@
     <value>HADOOP_MAPRED_HOME=/opt/hadoop</value>
   </property>
 
-  {# == Security == #}
-  <property>
-    <name>mapreduce.jobhistory.principal</name>
-    <value>{{ principal }}</value>
-  </property>
-  <property>
-    <name>mapreduce.jobhistory.keytab</name>
-    <value>{{ keytab_path }}</value>
-  </property>
+  {% if use_secure_mode %}
+    {% set principal = "mapred/_HOST@" + kdc_realm %}
+    <property>
+      <name>mapreduce.jobhistory.principal</name>
+      <value>{{ principal }}</value>
+    </property>
+    <property>
+      <name>mapreduce.jobhistory.keytab</name>
+      <value>{{ keytab_path }}</value>
+    </property>
+  {% endif %}
 </configuration>

@@ -1,4 +1,3 @@
-{% set principal = "hbase/_HOST@" + kdc_realm %}
 <configuration>
   <property>
     <name>hbase.cluster.distributed</name>
@@ -26,21 +25,17 @@
     <value>{{ master_zookeeper_data_dir }}</value>
   </property>
 
-  {# == Security == #}
-  <property>
-    <name>hbase.master.kerberos.principal</name>
-    <value>{{ principal }}</value>
-  </property>
-  <property>
-    <name>hbase.regionserver.kerberos.principal</name>
-    <value>{{ principal }}</value>
-  </property>
-  <property>
-    <name>hbase.master.keytab.file</name>
-    <value>{{ keytab_path }}</value>
-  </property>
-  <property>
-    <name>hbase.regionserver.keytab.file</name>
-    <value>{{ keytab_path }}</value>
-  </property>
+  {% if use_secure_mode %}
+    {% set principal = "hbase/_HOST@" + kdc_realm %}
+    {% for service in ["master", "regionserver"] %}
+      <property>
+        <name>hbase.{{ service }}.kerberos.principal</name>
+        <value>{{ principal }}</value>
+      </property>
+      <property>
+        <name>hbase.{{ service }}.keytab.file</name>
+        <value>{{ keytab_path }}</value>
+      </property>
+    {% endfor %}
+  {% endif %}
 </configuration>

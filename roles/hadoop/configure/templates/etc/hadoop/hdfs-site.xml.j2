@@ -13,49 +13,50 @@
     <value>{{ datanode_data_dirs | join(',') }}</value>
   </property>
   <property>
-    <name>dfs.permissions.supergroup</name>
+    <name>dfs.permissions.superusergroup</name>
     <value>hadoop</value>
   </property>
 
   {% if use_erasure_coding %}
-  <property>
-    <name>dfs.namenode.ec.system.default.policy</name>
-    <value>{{ erasure_coding_policy }}</value>
-  </property>
+    <property>
+      <name>dfs.namenode.ec.system.default.policy</name>
+      <value>{{ erasure_coding_policy }}</value>
+    </property>
   {% endif %}
 
-  {# == Security == #}
-  <property>
-    <name>dfs.datanode.address</name>
-    <value>0.0.0.0:1001</value>
-  </property>
-  <property>
-    <name>dfs.datanode.http.address</name>
-    <value>0.0.0.0:1002</value>
-  </property>
+  {% if use_secure_mode %}
+    {% for service in ["namenode", "secondary.namenode", "datanode"] %}
+      <property>
+        <name>dfs.{{ service }}.keytab.file</name>
+        <value>{{ keytab_path }}</value>
+      </property>
+      <property>
+        <name>dfs.{{ service }}.kerberos.principal</name>
+        <value>hdfs/_HOST@{{ kdc_realm }}</value>
+      </property>
+    {% endfor %}
 
-  {% for service in ["namenode", "secondary.namenode", "datanode"] %}
-  <property>
-    <name>dfs.{{ service }}.keytab.file</name>
-    <value>{{ keytab_path }}</value>
-  </property>
-  <property>
-    <name>dfs.{{ service }}.kerberos.principal</name>
-    <value>hdfs/_HOST@{{ kdc_realm }}</value>
-  </property>
-  {% endfor %}
+    <property>
+      <name>dfs.web.authentication.kerberos.principal</name>
+      <value>HTTP/_HOST@{{ kdc_realm }}</value>
+    </property>
+    <property>
+      <name>dfs.web.authentication.kerberos.keytab</name>
+      <value>{{ keytab_path }}</value>
+    </property>
 
-  <property>
-    <name>dfs.web.authentication.kerberos.principal</name>
-    <value>HTTP/_HOST@{{ kdc_realm }}</value>
-  </property>
-  <property>
-    <name>dfs.web.authentication.kerberos.keytab</name>
-    <value>{{ keytab_path }}</value>
-  </property>
+    <property>
+      <name>dfs.block.access.token.enable</name>
+      <value>true</value>
+    </property>
 
-  <property>
-    <name>dfs.block.access.token.enable</name>
-    <value>true</value>
-  </property>
+    <property>
+      <name>dfs.datanode.address</name>
+      <value>0.0.0.0:1001</value>
+    </property>
+    <property>
+      <name>dfs.datanode.http.address</name>
+      <value>0.0.0.0:1002</value>
+    </property>
+  {% endif %}
 </configuration>

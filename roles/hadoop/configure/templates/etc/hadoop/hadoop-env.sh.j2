@@ -1,6 +1,8 @@
 . /etc/bash.bashrc
 
+{% if use_secure_mode %}
 HDFS_NAMENODE_USER=hdfs
 HDFS_SECONDARYNAMENODE_USER=hdfs
 HDFS_DATANODE_SECURE_USER=hdfs
 JSVC_HOME=/usr/bin
+{% endif %}

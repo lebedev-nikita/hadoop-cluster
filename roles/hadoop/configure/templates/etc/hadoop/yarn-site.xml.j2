@@ -1,4 +1,3 @@
-{% set principal = "yarn/_HOST@" + kdc_realm %}
 <configuration>
   <property>
     <name>yarn.resourcemanager.hostname</name>
@@ -28,21 +27,22 @@
     <name>yarn.application.classpath</name>
     <value>${HADOOP_CONF_DIR},${HADOOP_COMMON_HOME}/share/hadoop/common/*,${HADOOP_COMMON_HOME}/share/hadoop/common/lib/*,${HADOOP_HDFS_HOME}/share/hadoop/hdfs/*,${HADOOP_HDFS_HOME}/share/hadoop/hdfs/lib/*,${HADOOP_MAPRED_HOME}/share/hadoop/mapreduce/*,${HADOOP_MAPRED_HOME}/share/hadoop/mapreduce/lib/*,${HADOOP_YARN_HOME}/share/hadoop/yarn/*,${HADOOP_YARN_HOME}/share/hadoop/yarn/lib/*</value>
   </property>
+  <property>
+    <name>yarn.webapp.ui2.enable</name>
+    <value>true</value>
+  </property>
   
-  <property>
-    <name>yarn.resourcemanager.principal</name>
-    <value>{{ principal }}</value>
-  </property>
-  <property>
-    <name>yarn.nodemanager.principal</name>
-    <value>{{ principal }}</value>
-  </property>
-  <property>
-    <name>yarn.resourcemanager.keytab</name>
-    <value>{{ keytab_path }}</value>
-  </property>
-  <property>
-    <name>yarn.nodemanager.keytab</name>
-    <value>{{ keytab_path }}</value>
-  </property>
+  {% if use_secure_mode %}
+    {% set principal = "yarn/_HOST@" + kdc_realm %}
+    {% for service in ["resourcemanager", "nodemanager"] %}
+      <property>
+        <name>yarn.{{ service }}.principal</name>
+        <value>{{ principal }}</value>
+      </property>
+      <property>
+        <name>yarn.{{ service }}.keytab</name>
+        <value>{{ keytab_path }}</value>
+      </property>
+    {% endfor %}
+  {% endif %}
 </configuration>

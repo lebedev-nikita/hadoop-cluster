@@ -5,38 +5,43 @@ _test:
 ifndef ANSIBLE_MODE
 	$(error ENV VARIABLE "ANSIBLE_MODE" IS NOT DEFINED)
 endif
-ifndef INVENTORY
-	$(error ENV VARIABLE "INVENTORY" IS NOT DEFINED)
+ifndef ANSIBLE_INVENTORY
+	$(error ENV VARIABLE "ANSIBLE_INVENTORY" IS NOT DEFINED)
 endif
 ifeq ("$(wildcard inventory.$(ANSIBLE_MODE).password)", "")
 	$(error FILE "inventory.$(ANSIBLE_MODE).password" DOES NOT EXIST")
 endif
 
 init: _test
-	ansible-playbook $(INVENTORY) _init_hosts.yml && \
-	ansible-playbook $(INVENTORY) _download.yml && \
-	ansible-playbook $(INVENTORY) _configure.yml
+	ansible-playbook _init_hosts.yml && \
+	ansible-playbook _download.yml && \
+	ansible-playbook _configure.yml
 
 start: _test
-	ansible-playbook $(INVENTORY) _start.yml
+	ansible-playbook _start.yml
 
 stop: _test
-	ansible-playbook $(INVENTORY) _stop.yml
+	ansible-playbook _stop.yml
 
 configure: _test
-	ansible-playbook $(INVENTORY) _configure.yml
+	ansible-playbook _configure.yml
 
 refresh_queues: _test
-	ansible-playbook $(INVENTORY) _configure.yml -e '{ "services": ["hadoop"] }' && \
-	ansible-playbook $(INVENTORY) _refresh_queues.yml
-
-DANGROUS_start_with_formatting: _test
-	ansible-playbook $(INVENTORY) _start.yml -e '{ "need_format": true }'
+	ansible-playbook _configure.yml -e '{ "services": ["hadoop"] }' && \
+	ansible-playbook _refresh_queues.yml
 
 restart: stop init start
 reconfigure: stop configure start
 
+# test: _test
+# 	ansible-playbook _download.yml -e '{ "services": ["hadoop"] }'
+# 	ansible-playbook _configure.yml -e '{ "services": ["hadoop"] }'
+# 	ansible-playbook _start.yml -e '{ "services": ["hadoop"] }'
+
+# DANGROUS_start_with_formatting: _test
+# 	ansible-playbook _start.yml -e '{ "need_format": true, "services": ["hadoop"] }'
+
 # DANGROUS_restart_with_formatting: stop
-# 	ansible-playbook $(INVENTORY) _clean_data_DANGEROUS.yml
-# 	ansible-playbook $(INVENTORY) _configure.yml
-# 	ansible-playbook $(INVENTORY) _start.yml -e '{ "need_format": true }'
+# 	ansible-playbook _clean_data_DANGEROUS.yml
+# 	ansible-playbook _configure.yml
+# 	ansible-playbook _start.yml -e '{ "need_format": true }'

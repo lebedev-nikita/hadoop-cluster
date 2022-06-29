@@ -40,7 +40,6 @@ ansible-galaxy collection install ansible.posix
 ```ini
 [all:vars]
 ansible_become_password = <BECOME_PASSWORD>
-hive_db_password = hive
 ```
 
 ## Переменные окружения
@@ -49,7 +48,7 @@ hive_db_password = hive
 
 ```bash
 export ANSIBLE_MODE=dev
-export INVENTORY="-i inventory.$ANSIBLE_MODE -i inventory.$ANSIBLE_MODE.password"
+export ANSIBLE_INVENTORY=inventory.$ANSIBLE_MODE,inventory.$ANSIBLE_MODE.password
 ```
 
 # Первичная настройка Managed Nodes
@@ -75,10 +74,10 @@ export INVENTORY="-i inventory.$ANSIBLE_MODE -i inventory.$ANSIBLE_MODE.password
 
 ```bash
 # Плейбуки запускаются следующей командой:
-ansible-playbook $INVENTORY <playbook_name>
+ansible-playbook <playbook_name>
 
 # В плейбуки можно передавать переменные в формате JSON:
-ansible-playbook $INVENTORY <playbook_name> -e '{ "services": ["hadoop", "hive", "spark"], "need_format": false }'
+ansible-playbook <playbook_name> -e '{ "services": ["hadoop", "hive", "spark"], "need_format": false }'
 ```
 
 # Makefile
@@ -111,21 +110,22 @@ ansible-playbook $INVENTORY <playbook_name> -e '{ "services": ["hadoop", "hive",
 
 # Адреса UI
 
-| Имя сервиса        | url                |
-| :----------------- | :----------------- |
-| HDFS NameNode      | http://host1:9870  |
-| HDFS DataNode      | http://host2:9864  |
-| YARN Cluster       | http://host1:8088  |
-| YARN Node          | http://host2:8042  |
-| Mapred History     | http://host1:19888 |
-| HBASE Master       | http://host1:16010 |
-| Spark History      | http://host1:18080 |
-| Hive Thrift Server | http://host1:10000 |
+| Имя сервиса        | url                                 |
+| :----------------- | :---------------------------------- |
+| HDFS NameNode      | http://host1.consultant.ru:9870     |
+| HDFS DataNode      | http://host2.consultant.ru:9864     |
+| YARN UI            | http://host1.consultant.ru:8088     |
+| YARN UI 2          | http://host1.consultant.ru:8088/ui2 |
+| YARN Node          | http://host2.consultant.ru:8042     |
+| Mapred History     | http://host1.consultant.ru:19888    |
+| HBASE Master       | http://host1.consultant.ru:16010    |
+| Spark History      | http://host1.consultant.ru:18080    |
+| Hive Thrift Server | http://host1.consultant.ru:10000    |
 
 # Адреса API
 
-| Имя сервиса         | url                 |
-| :------------------ | :------------------ |
-| HDFS                | http://host1:19000/ |
-| YARN ResouceManager | http://host1:8032/  |
-| HiveServer2         | http://host1:10002/ |
+| Имя сервиса         | url                               |
+| :------------------ | :-------------------------------- |
+| HDFS                | http://host1.consultant.ru:19000/ |
+| YARN ResouceManager | http://host1.consultant.ru:8032/  |
+| HiveServer2         | http://host1.consultant.ru:10002/ |
