@@ -11,11 +11,13 @@ hadoop-master.consultant.ru
 hadoop-slave1.consultant.ru
 hadoop-slave2.consultant.ru
 
+[nifi_hosts]
+hadoop-master.consultant.ru
+hadoop-slave1.consultant.ru
+hadoop-slave2.consultant.ru
+
 [all:vars]
 http_proxy = svnmirror.consultant.ru:3128
-
-use_erasure_coding = False
-erasure_coding_policy = RS-3-2-1024k
 
 use_secure_mode = False
 kdc_host = hadoop-master.consultant.ru

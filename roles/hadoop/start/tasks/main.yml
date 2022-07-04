@@ -1,6 +1,3 @@
-- import_role:
-    role: common/register_running_services
-
 - name: create "hdfs.nohup.out" file with correct owner
   become: yes
   copy:
@@ -11,18 +8,10 @@
 
 - name: start hdfs
   when: not hdfs_is_running
-  become_user: "{{ 'root' if use_secure_mode else 'hdfs' }}"
+  become: yes
   shell: |
     . /etc/bash.bashrc
     nohup /opt/hadoop/sbin/start-dfs.sh > /opt/hadoop/logs/hdfs.nohup.out
-
-- name: set Erasure Coding policy
-  when: need_format and use_erasure_coding
-  become_user: hdfs
-  shell: |
-    . /etc/bash.bashrc
-    kinit hdfs/$(hostname -f) -kt /etc/security/krb5.keytab
-    hdfs ec -setPolicy -path / -policy {{ erasure_coding_policy }}
 
 - name: start yarn
   when: not yarn_is_running

@@ -80,9 +80,18 @@ addprinc hbase/hadoop-slave1.consultant.ru
 addprinc hbase/hadoop-slave2.consultant.ru
 addprinc hbase/hadoop-slave3.consultant.ru
 
-# Следующие сервисы разворачиваются только на hadoop-master
+addprinc nifi/hadoop-master.consultant.ru
+addprinc nifi/hadoop-slave1.consultant.ru
+addprinc nifi/hadoop-slave2.consultant.ru
+addprinc nifi/hadoop-slave3.consultant.ru
+
 # HTTP - имя пользователя-сервиса, участвующего в SPNEGO-аутентификации.
 addprinc HTTP/hadoop-master.consultant.ru
+addprinc HTTP/hadoop-slave1.consultant.ru
+addprinc HTTP/hadoop-slave2.consultant.ru
+addprinc HTTP/hadoop-slave3.consultant.ru
+
+# Следующие сервисы разворачиваются только на hadoop-master
 addprinc spark/hadoop-master.consultant.ru
 addprinc hive/hadoop-master.consultant.ru
 
@@ -105,9 +114,10 @@ addent -password -p hdfs/hadoop-master.consultant.ru -k 1 -e aes256-cts
 addent -password -p yarn/hadoop-master.consultant.ru -k 1 -e aes256-cts
 addent -password -p mapred/hadoop-master.consultant.ru -k 1 -e aes256-cts
 addent -password -p hbase/hadoop-master.consultant.ru -k 1 -e aes256-cts
+addent -password -p nifi/hadoop-master.consultant.ru -k 1 -e aes256-cts
+addent -password -p HTTP/hadoop-master.consultant.ru -k 1 -e aes256-cts
 
 # Эти учетные записи нужно добавить только на хосте hadoop-master
-addent -password -p HTTP/hadoop-master.consultant.ru -k 1 -e aes256-cts
 addent -password -p spark/hadoop-master.consultant.ru -k 1 -e aes256-cts
 addent -password -p hive/hadoop-master.consultant.ru -k 1 -e aes256-cts
 
@@ -122,6 +132,24 @@ sudo chmod g+r /etc/security/krb5.keytab
 ll /etc/security/krb5.keytab
 ```
 
+## Проверка работоспособности HDFS
+
+Когда HDFS запущена в Secure Mode, следующие команды должны выполняться без ошибок:
+
+```bash
+# [hdfs@hadoop-master.consultant.ru]
+kinit hdfs/$(hostname -f) -kt /etc/security/krb5.keytab
+curl -i --negotiate -u : "http://host1.consultant.ru:9870/webhdfs/v1/?op=LISTSTATUS"
+```
+
+А следующая команда должна вернуть ошибку аутентификации:
+
+```bash
+# [hdfs@hadoop-master.consultant.ru]
+kinit hdfs/$(hostname -f) -kt /etc/security/krb5.keytab
+curl -i "http://host1.consultant.ru:9870/webhdfs/v1/?op=LISTSTATUS"
+```
+
 ## Настройка Windows
 
 1. Получить логин и пароль от Kerberos.
@@ -130,10 +158,10 @@ ll /etc/security/krb5.keytab
 
 ```ini
 [libdefaults]
-  default_realm = HADOOP.CONSULTANT.RU
+  default_realm = HADOOP_DEV.CONSULTANT.RU
 
 [realms]
-  HADOOP.CONSULTANT.RU = {
+  HADOOP_DEV.CONSULTANT.RU = {
     admin_server = hadoop-master.consultant.ru
     kdc = hadoop-master.consultant.ru
   }

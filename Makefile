@@ -30,16 +30,11 @@ refresh_queues: _test
 	ansible-playbook _configure.yml -e '{ "services": ["hadoop"] }' && \
 	ansible-playbook _refresh_queues.yml
 
-restart: stop init start
+reinit: stop init start
 reconfigure: stop configure start
 
-# test: _test
-# 	ansible-playbook _download.yml -e '{ "services": ["hadoop"] }'
-# 	ansible-playbook _configure.yml -e '{ "services": ["hadoop"] }'
-# 	ansible-playbook _start.yml -e '{ "services": ["hadoop"] }'
-
 # DANGROUS_start_with_formatting: _test
-# 	ansible-playbook _start.yml -e '{ "need_format": true, "services": ["hadoop"] }'
+# 	ansible-playbook _start.yml -e '{ "need_format": true }'
 
 # DANGROUS_restart_with_formatting: stop
 # 	ansible-playbook _clean_data_DANGEROUS.yml

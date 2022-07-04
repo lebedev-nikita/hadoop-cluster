@@ -1,6 +1,3 @@
-- import_role:
-    role: common/register_running_services
-
 - name: start hbase
   when: not hbase_is_running
   become_user: hbase

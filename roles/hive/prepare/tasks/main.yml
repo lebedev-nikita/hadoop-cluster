@@ -1,6 +1,9 @@
-- import_role:
-    role: common/register_running_services
-  failed_when: hiveserver2_is_running
+- fail:
+  when: hiveserver2_is_running
+
+- become_user: hive
+  import_role:
+    role: common/kinit
 
 - name: create user 'hive' in pg
   become_user: postgres
@@ -25,12 +28,12 @@
     cmd: |
       . /etc/bash.bashrc
       /opt/hive/bin/schematool -initSchema -dbType postgres
+  failed_when: result.rc != 0 and ('already exists' not in result.stderr)
 
 - name: execute shell commands
   become_user: hive
   shell: |
     . /etc/bash.bashrc
-    kinit hive/{{ inventory_hostname }} -kt {{ keytab_path }}
     {{ item }}
   loop:
     - /opt/hadoop/bin/hdfs dfs -mkdir -p /hive/warehouse

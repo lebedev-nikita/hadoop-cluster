@@ -1,5 +1,4 @@
-- import_role:
-    role: common/register_running_services
-  failed_when: hbase_is_running
+- fail:
+  when: hbase_is_running
 
 - shell: rm -rf /opt/hbase*

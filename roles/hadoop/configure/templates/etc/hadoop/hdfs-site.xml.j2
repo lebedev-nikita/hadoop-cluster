@@ -17,12 +17,10 @@
     <value>hadoop</value>
   </property>
 
-  {% if use_erasure_coding %}
-    <property>
-      <name>dfs.namenode.ec.system.default.policy</name>
-      <value>{{ erasure_coding_policy }}</value>
-    </property>
-  {% endif %}
+  <property>
+    <name>dfs.namenode.ec.system.default.policy</name>
+    <value>{{ erasure_coding_policy | default('RS-3-2-1024k') }}</value>
+  </property>
 
   {% if use_secure_mode %}
     {% for service in ["namenode", "secondary.namenode", "datanode"] %}

@@ -1,0 +1,3 @@
+- name: kinit
+  when: use_secure_mode
+  shell: kinit $(whoami)/$(hostname -f) -kt /etc/security/krb5.keytab

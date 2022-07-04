@@ -1,6 +1,3 @@
-- import_role:
-    role: common/register_running_services
-
 - name: stop spark
   become_user: spark
   when: spark_history_server_is_running

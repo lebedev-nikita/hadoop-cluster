@@ -1,0 +1,6 @@
+- name: start Nifi
+  when: not nifi_is_running
+  become_user: nifi
+  shell: |
+    . /etc/bash.bashrc
+    nohup /opt/nifi/bin/nifi.sh start > /opt/nifi/logs/nifi.nohup.out &

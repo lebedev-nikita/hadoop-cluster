@@ -93,11 +93,21 @@ ansible-playbook <playbook_name> -e '{ "services": ["hadoop", "hive", "spark"], 
 
 # Сценарии использования
 
-## Первичная установка
+## Установка на пустой кластер
 
 1. `make init`
 2. Создать keytab-файлы на каждом хосте ([инструкция](./doc/kerberos.md#создание-keytab-ов))
 3. `make DANGROUS_start_with_formatting`
+
+## Апгрейд кластера: Hadoop 2 -> Hadoop 3
+
+1. Остановить кластер Hadoop 2
+2. `make init`
+3. Создать keytab-файлы на каждом хосте ([инструкция](./doc/kerberos.md#создание-keytab-ов))
+4. _[hdfs@hadoop-master]:_ `/opt/hadoop/sbin/start-dfs -upgrade`
+5. Проверить, что HDFS работает корректно
+6. _[hdfs@hadoop-master]:_ `/opt/hadoop/bin/hdfs dfsadmin -finalizeUpgrade`
+7. `make start` - запустить остальные сервисы
 
 ## Добавить новую машину
 
@@ -110,17 +120,18 @@ ansible-playbook <playbook_name> -e '{ "services": ["hadoop", "hive", "spark"], 
 
 # Адреса UI
 
-| Имя сервиса        | url                                 |
-| :----------------- | :---------------------------------- |
-| HDFS NameNode      | http://host1.consultant.ru:9870     |
-| HDFS DataNode      | http://host2.consultant.ru:9864     |
-| YARN UI            | http://host1.consultant.ru:8088     |
-| YARN UI 2          | http://host1.consultant.ru:8088/ui2 |
-| YARN Node          | http://host2.consultant.ru:8042     |
-| Mapred History     | http://host1.consultant.ru:19888    |
-| HBASE Master       | http://host1.consultant.ru:16010    |
-| Spark History      | http://host1.consultant.ru:18080    |
-| Hive Thrift Server | http://host1.consultant.ru:10000    |
+| Имя сервиса        | url                                   |
+| :----------------- | :------------------------------------ |
+| HDFS NameNode      | http://host1.consultant.ru:9870       |
+| HDFS DataNode      | http://host2.consultant.ru:9864       |
+| YARN UI            | http://host1.consultant.ru:8088       |
+| YARN UI 2          | http://host1.consultant.ru:8088/ui2   |
+| YARN Node          | http://host2.consultant.ru:8042       |
+| Mapred History     | http://host1.consultant.ru:19888      |
+| HBASE Master       | http://host1.consultant.ru:16010      |
+| Spark History      | http://host1.consultant.ru:18080      |
+| Hive Thrift Server | http://host1.consultant.ru:10000      |
+| NiFi               | http://host1.consultant.ru:8443/nifi/ |
 
 # Адреса API
 

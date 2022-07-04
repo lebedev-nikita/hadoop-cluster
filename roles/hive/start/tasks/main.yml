@@ -1,10 +1,6 @@
-- import_role:
-    role: common/register_running_services
-
 - name: start HiveServer2
   when: not hiveserver2_is_running
   become_user: hive
   shell: |
     . /etc/bash.bashrc
-    kinit hive/{{ inventory_hostname }} -kt {{ keytab_path }}
     nohup /opt/hive/bin/hiveserver2 > /opt/hive/logs/hive.nohup.out &

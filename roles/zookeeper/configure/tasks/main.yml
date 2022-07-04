@@ -31,4 +31,3 @@
     state: directory
   loop:
     - "{{ zookeeper_data_dir }}"
-    # - /opt/zookeeper-3.8.0-bin

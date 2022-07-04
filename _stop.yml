@@ -1,11 +1,14 @@
-- hosts: masters
+- hosts: all
   become: yes
   roles:
+    - role: common/register_running_services
+    - role: nifi/stop
+      when: (services is not defined or "nifi" in services) and host_in_nifi_hosts
     - role: hive/stop
-      when: services is not defined or "hive" in services
+      when: (services is not defined or "hive" in services) and host_in_masters
     - role: spark/stop
-      when: services is not defined or "spark" in services
+      when: (services is not defined or "spark" in services) and host_in_masters
     - role: hbase/stop
-      when: services is not defined or "hbase" in services
+      when: (services is not defined or "hbase" in services) and host_in_masters
     - role: hadoop/stop
-      when: services is not defined or "hadoop" in services
+      when: (services is not defined or "hadoop" in services) and host_in_masters

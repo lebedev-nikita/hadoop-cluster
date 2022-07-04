@@ -1,7 +1,10 @@
 need_format: False
 master_host: "{{ groups['masters'][0] }}"
-is_master_host: "{{ inventory_hostname == master_host }}"
 
 keytab_path: /etc/security/krb5.keytab
 hive_db_name: hive_metastore
 hive_db_password: hive
+
+host_in_masters: "{{ inventory_hostname in groups['masters'] }}"
+host_in_zk_hosts: "{{ inventory_hostname in groups['zk_hosts'] }}"
+host_in_nifi_hosts: "{{ inventory_hostname in groups['nifi_hosts'] }}"

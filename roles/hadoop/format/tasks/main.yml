@@ -1,6 +1,9 @@
+- fail:
+  when: hdfs_is_running or yarn_is_running
+
 - import_role:
-    role: common/register_running_services
-  failed_when: hdfs_is_running or yarn_is_running
+    role: common/kinit
+  become_user: hdfs
 
 - name: format namenode
   become_user: hdfs

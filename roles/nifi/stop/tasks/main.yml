@@ -1,0 +1,6 @@
+- name: stop nifi
+  become_user: nifi
+  when: nifi_is_running
+  shell: |
+    . /etc/bash.bashrc
+    /opt/nifi/bin/nifi.sh stop

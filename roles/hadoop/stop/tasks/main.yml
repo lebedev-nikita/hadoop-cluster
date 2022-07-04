@@ -1,6 +1,3 @@
-- import_role:
-    role: common/register_running_services
-
 - name: stop mapred
   become_user: mapred
   when: mapred_is_running
@@ -16,7 +13,6 @@
     /opt/hadoop/sbin/stop-yarn.sh
 
 - name: stop hdfs
-  # become_user: hdfs
   become: yes
   when: hdfs_is_running
   shell: |
