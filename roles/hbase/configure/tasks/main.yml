@@ -1,9 +1,9 @@
 - name: fill configuration files
   template:
     src: "{{ item }}.j2"
-    dest: "/opt/hbase/{{ item }}"
-    owner: hbase
-    group: hadoop
+    dest: "{{ opt_dir }}/hbase/{{ item }}"
+    owner: "{{ hbase_user }}"
+    group: "{{ hadoop_user }}"
   loop:
     - "conf/hbase-env.sh"
     - "conf/hbase-site.xml"

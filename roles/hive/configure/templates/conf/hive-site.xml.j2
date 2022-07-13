@@ -10,52 +10,15 @@
     <name>system:user.name</name>
     <value>${user.name}</value>
   </property>
-    <property>
+
+  <property>
     <name>javax.jdo.option.ConnectionURL</name>
     <value>jdbc:postgresql://localhost/{{ hive_db_name }}</value>
   </property>
   <property>
     <name>javax.jdo.option.ConnectionPassword</name>
     <value>{{ hive_db_password }}</value>
-    <description>password to use against metastore database</description>
   </property>
-  
-  {% if use_secure_mode %}
-    <property>
-      <name>hive.metastore.kerberos.keytab.file</name>
-      <value>{{ keytab_path }}</value>
-    </property>
-    <property>
-      <name>hive.metastore.kerberos.principal</name>
-      <value>hive/_HOST@{{ kdc_realm }}</value>
-    </property>
-
-    <property>
-      <name>hive.server2.authentication.kerberos.keytab</name>
-      <value>{{ keytab_path }}</value>
-    </property>
-    <property>
-      <name>hive.server2.authentication.kerberos.principal</name>
-      <value>hive/_HOST@{{ kdc_realm }}</value>
-    </property>
-
-    <property>
-      <name>hive.server2.webui.use.spnego</name>
-      <value>true</value>
-      <description>If true, the HiveServer2 WebUI will be secured with SPNEGO. Clients must authenticate with Kerberos.</description>
-    </property>
-
-    {% for word in ["webui", "authentication"] %}
-      <property>
-        <name>hive.server2.{{ word }}.spnego.keytab</name>
-        <value>{{ keytab_path }}</value>
-      </property>
-      <property>
-        <name>hive.server2.{{ word }}.spnego.principal</name>
-        <value>HTTP/_HOST@{{ kdc_realm }}</value>
-      </property>
-    {% endfor %}
-  {% endif %}
 
   <property>
     <name>hive.zookeeper.quorum</name>
@@ -63,7 +26,7 @@
   </property>
   <property>
     <name>hive.zookeeper.client.port</name>
-    <value>2181</value>
+    <value>{{ zk_client_port }}</value>
   </property>
 
   <property>
@@ -71,20 +34,73 @@
     <value>{{ master_host }}</value>
     <description>The host address the HiveServer2 WebUI will listen on</description>
   </property>
-  <property>
-    <name>hive.server2.webui.port</name>
-    <value>10002</value>
-    <description>The port the HiveServer2 WebUI will listen on. This can beset to 0 or a negative integer to disable the web UI</description>
-  </property>
 
   <property>
     <name>hive.server2.transport.mode</name>
     <value>binary</value>
-    <description>
-      Expects one of [binary, http].
-      Transport mode of HiveServer2.
-    </description>
+    <description>Transport mode of HiveServer2. Expects one of [binary, http]</description>
   </property>
+  <property>
+    <name>hive.server2.webui.port</name>
+    <value>{{ hive_server2_webui_port }}</value>
+  </property>
+  <property>
+    <name>hive.server2.thrift.port</name>
+    <value>{{ hive_server2_thrift_port }}</value>
+    <description>Port number of HiveServer2 Thrift interface when hive.server2.transport.mode is 'binary'.</description>
+  </property>
+  
+  {% if use_secure_mode %}
+    <property>
+      <name>hive.metastore.kerberos.principal</name>
+      <value>{{ hive_user }}/_HOST@{{ kdc_realm }}</value>
+    </property>
+    <property>
+      <name>hive.metastore.kerberos.keytab.file</name>
+      <value>{{ keytab_path }}</value>
+    </property>
+
+    <property>
+      <name>hive.server2.authentication.kerberos.principal</name>
+      <value>{{ hive_user }}/_HOST@{{ kdc_realm }}</value>
+    </property>
+    <property>
+      <name>hive.server2.authentication.kerberos.keytab</name>
+      <value>{{ keytab_path }}</value>
+    </property>
+
+    <property>
+      <name>hive.server2.webui.use.spnego</name>
+      <value>true</value>
+    </property>
+
+    <property>
+      <name>hive.server2.authentication</name>
+      <value>kerberos</value>
+      <description>
+        Expects one of [nosasl, none, ldap, kerberos, pam, custom].
+        Client authentication types.
+          NONE: no authentication check
+          LDAP: LDAP/AD based authentication
+          KERBEROS: Kerberos/GSSAPI authentication
+          CUSTOM: Custom authentication provider
+                  (Use with property hive.server2.custom.authentication.class)
+          PAM: Pluggable authentication module
+          NOSASL:  Raw transport
+      </description>
+    </property>
+
+    {% for word in ["webui", "authentication"] %}
+      <property>
+        <name>hive.server2.{{ word }}.spnego.principal</name>
+        <value>HTTP/_HOST@{{ kdc_realm }}</value>
+      </property>
+      <property>
+        <name>hive.server2.{{ word }}.spnego.keytab</name>
+        <value>{{ keytab_path }}</value>
+      </property>
+    {% endfor %}
+  {% endif %}
 
   {# == Defaults: == #}
   <property>
@@ -4511,11 +4527,6 @@
     <description>HttpOnly attribute of the HS2 generated cookie.</description>
   </property>
   <property>
-    <name>hive.server2.thrift.port</name>
-    <value>10000</value>
-    <description>Port number of HiveServer2 Thrift interface when hive.server2.transport.mode is 'binary'.</description>
-  </property>
-  <property>
     <name>hive.server2.thrift.sasl.qop</name>
     <value>auth</value>
     <description>
@@ -4618,21 +4629,6 @@
     <name>hive.session.impl.withugi.classname</name>
     <value />
     <description>Classname for custom implementation of hive session with UGI</description>
-  </property>
-  <property>
-    <name>hive.server2.authentication</name>
-    <value>kerberos</value>
-    <description>
-      Expects one of [nosasl, none, ldap, kerberos, pam, custom].
-      Client authentication types.
-        NONE: no authentication check
-        LDAP: LDAP/AD based authentication
-        KERBEROS: Kerberos/GSSAPI authentication
-        CUSTOM: Custom authentication provider
-                (Use with property hive.server2.custom.authentication.class)
-        PAM: Pluggable authentication module
-        NOSASL:  Raw transport
-    </description>
   </property>
   <property>
     <name>hive.server2.allow.user.substitution</name>
@@ -6119,7 +6115,6 @@
   <property>
     <name>hive.llap.daemon.shuffle.dir.watcher.enabled</name>
     <value>false</value>
-    <description>TODO doc</description>
   </property>
   <property>
     <name>hive.llap.daemon.am.liveness.heartbeat.interval.ms</name>

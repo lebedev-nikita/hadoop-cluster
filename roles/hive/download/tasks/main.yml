@@ -5,7 +5,7 @@
     archive_file: apache-hive-3.1.3-bin.tar.gz
     unarchived_dir: apache-hive-3.1.3-bin
     link: hive
-    owner: hive
+    owner: "{{ hive_user }}"
 
 - name: download JDBC driver
   become: yes
@@ -19,8 +19,8 @@
   file:
     state: link
     src: /usr/share/java/postgresql-jdbc-42.3.6.jar
-    dest: /opt/hive/jdbc/postgresql-jdbc.jar
+    dest: "{{ opt_dir }}/hive/jdbc/postgresql-jdbc.jar"
 
 - name: remove duplicate log4j jar
-  become_user: hive
-  shell: rm -rf /opt/hive/lib/log4j-slf4j-impl-*
+  become_user: "{{ hive_user }}"
+  shell: "rm -rf {{ opt_dir }}/hive/lib/log4j-slf4j-impl-*"

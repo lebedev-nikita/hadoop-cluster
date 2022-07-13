@@ -1,42 +1,37 @@
 - fail:
   when: hiveserver2_is_running
 
-- become_user: hive
-  import_role:
-    role: common/kinit
+- import_role: role=common/kinit
+  become_user: "{{ hive_user }}"
 
-- name: create user 'hive' in pg
+- name: create user '{{ hive_user }}' in pg
   become_user: postgres
   expect:
-    command: createuser -d -P hive
+    command: "createuser -d -P {{ hive_user }}"
     responses:
       "Enter password for new role": "{{ hive_db_password }}"
       "Enter it again": "{{ hive_db_password }}"
   register: result
   failed_when: result.rc != 0 and ('already exists' not in result.stdout)
 
-- name: create database 'hive' in pg
-  become_user: hive
+- name: create database '{{ hive_db_name }}' in pg
+  become_user: "{{ hive_user }}"
   shell: "createdb {{ hive_db_name }}"
   register: result
   failed_when: result.rc != 0 and ('already exists' not in result.stderr)
 
 - name: init pg schema
-  become_user: hive
+  become_user: "{{ hive_user }}"
   shell:
-    chdir: /opt/hive
-    cmd: |
-      . /etc/bash.bashrc
-      /opt/hive/bin/schematool -initSchema -dbType postgres
+    chdir: "{{ opt_dir }}/hive"
+    cmd: "{{ opt_dir }}/hive/bin/schematool -initSchema -dbType postgres"
   failed_when: result.rc != 0 and ('already exists' not in result.stderr)
 
 - name: execute shell commands
-  become_user: hive
-  shell: |
-    . /etc/bash.bashrc
-    {{ item }}
+  become_user: "{{ hive_user }}"
+  shell: "{{ item }}"
   loop:
-    - /opt/hadoop/bin/hdfs dfs -mkdir -p /hive/warehouse
-    - /opt/hadoop/bin/hdfs dfs -mkdir -p /tmp
-    - /opt/hadoop/bin/hdfs dfs -chmod g+w /hive/warehouse
-    - /opt/hadoop/bin/hdfs dfs -chmod g+w /tmp
+    - "{{ opt_dir }}/hadoop/bin/hdfs dfs -mkdir -p /hive/warehouse"
+    - "{{ opt_dir }}/hadoop/bin/hdfs dfs -mkdir -p /tmp"
+    - "{{ opt_dir }}/hadoop/bin/hdfs dfs -chmod g+w /hive/warehouse"
+    - "{{ opt_dir }}/hadoop/bin/hdfs dfs -chmod g+w /tmp"

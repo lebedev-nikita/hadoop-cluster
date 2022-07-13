@@ -2,8 +2,9 @@ tickTime=2000
 initLimit=10
 syncLimit=5
 dataDir={{ zookeeper_data_dir }}
-clientPort=2181
+clientPort={{ zk_client_port}}
+admin.enableServer=false
 
 {% for host in groups['zk_hosts'] %}
-server.{{ loop.index }}={{ host }}:2888:3888
+server.{{ loop.index }}={{ host }}:{{ zk_quorum_port}}:{{ zk_leader_election_port}}
 {% endfor %}

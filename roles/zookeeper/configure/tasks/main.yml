@@ -3,17 +3,22 @@
     path: "{{ item }}"
     state: directory
   loop:
-    - /opt/zookeeper/conf
-    - /etc/systemd/system
+    - "{{ opt_dir }}/zookeeper/conf"
     - "{{ zookeeper_data_dir }}"
+    - /etc/systemd/system
 
 - name: configure zk
   template:
-    src: "{{ item }}.j2"
-    dest: "/{{ item }}"
+    src: "opt/{{ item }}.j2"
+    dest: "{{ opt_dir }}/{{ item }}"
   loop:
-    - opt/zookeeper/conf/zoo.cfg
-    - etc/systemd/system/zk.service
+    - zookeeper/conf/zoo.cfg
+    - zookeeper/conf/zookeeper-env.sh
+
+- name: configure zk
+  template:
+    src: "etc/systemd/system/zk.service.j2"
+    dest: "/etc/systemd/system/zk-{{ cluster_mode }}.service"
 
 - name: myid
   copy:
@@ -22,11 +27,11 @@
   vars:
     myid: "{{ groups['zk_hosts'].index(inventory_hostname) + 1 }}"
 
-- name: chown -R zookeeper:hadoop
+- name: "chown -R {{ zookeeper_user }}:{{ hadoop_user }}"
   file:
     path: "{{ item }}"
-    owner: zookeeper
-    group: hadoop
+    owner: "{{ zookeeper_user }}"
+    group: "{{ hadoop_user }}"
     recurse: yes
     state: directory
   loop:

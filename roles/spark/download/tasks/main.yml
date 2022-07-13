@@ -5,4 +5,4 @@
     archive_file: spark-3.2.1-bin-hadoop3.2.tgz
     unarchived_dir: spark-3.2.1-bin-hadoop3.2
     link: spark
-    owner: spark
+    owner: "{{ spark_user }}"

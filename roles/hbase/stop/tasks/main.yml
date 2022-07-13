@@ -1,6 +1,12 @@
+- import_role: role=common/kinit
+  become_user: "{{ hbase_user }}"
+
+- name: stop hbase rest server
+  become_user: "{{ hbase_user }}"
+  when: hbase_rest_server_is_running
+  shell: "{{ opt_dir }}/hbase/bin/hbase-daemon.sh stop rest"
+
 - name: stop hbase
-  become_user: hbase
+  become_user: "{{ hbase_user }}"
   when: hbase_is_running
-  shell: |
-    . /etc/bash.bashrc
-    /opt/hbase/bin/stop-hbase.sh
+  shell: "{{ opt_dir }}/hbase/bin/stop-hbase.sh 2>&1 > {{ opt_dir }}/hbase/logs/stop.log"

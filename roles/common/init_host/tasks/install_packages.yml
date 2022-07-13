@@ -25,3 +25,10 @@
   pip:
     name:
       - pexpect
+
+- name: set JAVA_HOME
+  become: yes
+  lineinfile:
+    path: /etc/environment
+    line: JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+    state: present

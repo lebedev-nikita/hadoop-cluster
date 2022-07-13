@@ -1,0 +1,4 @@
+- fail:
+  when: zookeeper_is_running
+
+- shell: "rm -rf {{ opt_dir }}/*zookeeper*"

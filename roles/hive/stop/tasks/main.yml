@@ -1,4 +1,4 @@
 - name: stop HiveServer2
   when: hiveserver2_is_running
-  become_user: hive
+  become_user: "{{ hive_user }}"
   shell: "kill {{ hiveserver2_pid }}"

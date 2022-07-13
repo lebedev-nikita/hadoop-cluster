@@ -1,9 +1,24 @@
 need_format: False
 master_host: "{{ groups['masters'][0] }}"
 
-keytab_path: /etc/security/krb5.keytab
-hive_db_name: hive_metastore
+datanode_data_dirs: "{{ data_dirs | product(['/hdfs/data']) | map('join') | list }}"
+namenode_data_dirs: "{{ data_dirs | product(['/hdfs/name']) | map('join') | list }}"
+
+cluster_mode: "{{ lookup('ansible.builtin.env', 'ANSIBLE_MODE') }}"
+opt_dir: "/opt/{{ cluster_mode }}"
+
+keytab_path: "/etc/security/krb5-{{ cluster_mode }}.keytab"
+hive_db_name: "hive_{{ cluster_mode }}_metastore"
 hive_db_password: hive
 
 host_in_masters: "{{ inventory_hostname in groups['masters'] }}"
 host_in_zk_hosts: "{{ inventory_hostname in groups['zk_hosts'] }}"
+
+zookeeper_user: "zookeeper-{{ cluster_mode }}"
+hadoop_user: "hadoop-{{ cluster_mode }}"
+hdfs_user: "hdfs-{{ cluster_mode }}"
+yarn_user: "yarn-{{ cluster_mode }}"
+mapred_user: "mapred-{{ cluster_mode }}"
+hbase_user: "hbase-{{ cluster_mode }}"
+spark_user: "spark-{{ cluster_mode }}"
+hive_user: "hive-{{ cluster_mode }}"

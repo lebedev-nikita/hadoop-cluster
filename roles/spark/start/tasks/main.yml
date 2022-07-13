@@ -1,6 +1,7 @@
+- import_role: role=common/kinit
+  become_user: "{{ spark_user }}"
+
 - name: start spark history server
   when: not spark_history_server_is_running
-  become_user: spark
-  shell: |
-    . /etc/bash.bashrc
-    nohup /opt/spark/sbin/start-history-server.sh > /opt/spark/logs/spark-history-server.nohup.out
+  become_user: "{{ spark_user }}"
+  shell: "nohup {{ opt_dir }}/spark/sbin/start-history-server.sh 2>&1 > {{ opt_dir }}/spark/logs/spark-history-server.nohup.out"

@@ -1,5 +1,4 @@
 - fail:
   when: hdfs_is_running or yarn_is_running or mapred_is_running
 
-- shell: rm -rf /opt/hadoop*
-- shell: rm -rf /tmp/hadoop-hadoop-*
+- shell: "rm -rf {{ opt_dir }}/hadoop*"

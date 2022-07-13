@@ -1,4 +1,12 @@
-# export HADOOP_HOME=/opt/hadoop
-# export HADOOP_HEAPSIZE=1024
+export JAVA_TOOL_OPTIONS=-Dcluster.mode={{ cluster_mode }}
 
-export HIVE_CONF_DIR=/opt/hive/conf
+export HIVE_CONF_DIR={{ opt_dir }}/hive/conf
+export HIVE_HOME={{ opt_dir }}/hive
+
+export HADOOP={{ opt_dir }}/hadoop/bin/hadoop
+export HADOOP_HOME={{ opt_dir }}/hadoop
+export HADOOP_CONF_DIR={{ opt_dir }}/hadoop/etc/hadoop
+
+export PATH=${PATH}:{{ opt_dir }}/hadoop/bin
+export PATH=${PATH}:{{ opt_dir }}/hbase/bin
+export PATH=${PATH}:{{ opt_dir }}/hive/bin

@@ -1,0 +1,6 @@
+- name: stop zk service
+  become: yes
+  systemd:
+    name: "zk-{{ cluster_mode }}"
+    state: stopped
+    enabled: false

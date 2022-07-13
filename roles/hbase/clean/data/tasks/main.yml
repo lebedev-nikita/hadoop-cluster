@@ -1,0 +1,6 @@
+- fail:
+  when: hbase_is_running
+
+- shell: |
+    rm -rf /tmp/*hbase*
+    rm -rf {{ opt_dir }}/hbase/logs/*

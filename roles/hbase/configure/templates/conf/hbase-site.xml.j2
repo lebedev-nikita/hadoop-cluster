@@ -5,11 +5,7 @@
   </property>
   <property>
     <name>hbase.rootdir</name>
-    <value>hdfs://{{ master_host }}:19000/hbase</value>
-  </property>
-  <property>
-    <name>hbase.unsafe.stream.capability.enforce</name>
-    <value>false</value>
+    <value>hdfs://{{ master_host }}:{{ core_default_fs_port}}/hbase</value>
   </property>
   <property>
     <name>hbase.wal.provider</name>
@@ -21,16 +17,38 @@
     <value>{{ groups['zk_hosts'] | join(',')  }}</value>
   </property>
   <property>
-    <name>hbase.zookeeper.property.dataDir</name>
-    <value>{{ master_zookeeper_data_dir }}</value>
+    <name>hbase.zookeeper.property.clientPort</name>
+    <value>{{ zk_client_port }}</value>
   </property>
 
+  {% for service, port in [
+      [ "master",             hbase_master_port            ],
+      [ "master.info",        hbase_master_info_port       ],
+      [ "regionserver",       hbase_regionserver_port      ],
+      [ "regionserver.info",  hbase_regionserver_info_port ],
+      [ "rest",               hbase_rest_port              ],
+      [ "rest.info",          hbase_rest_info_port         ],
+    ]
+  %}
+    <property>
+      <name>hbase.{{ service }}.port</name>
+      <value>{{ port }}</value>
+    </property>
+  {% endfor %}
+
   {% if use_secure_mode %}
-    {% set principal = "hbase/_HOST@" + kdc_realm %}
-    {% for service in ["master", "regionserver"] %}
+    <property>
+      <name>hbase.security.authentication</name>
+      <value>kerberos</value>
+    </property>
+    <property>
+      <name>hbase.superuser</name>
+      <value>{{ hbase_user }}</value>
+    </property>
+    {% for service in ["master", "regionserver", "rest"] %}
       <property>
         <name>hbase.{{ service }}.kerberos.principal</name>
-        <value>{{ principal }}</value>
+        <value>{{ hbase_user }}/_HOST@{{ kdc_realm }}</value>
       </property>
       <property>
         <name>hbase.{{ service }}.keytab.file</name>

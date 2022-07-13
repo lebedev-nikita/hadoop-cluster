@@ -54,93 +54,98 @@ kinit <your_name>/admin
 klist
 ```
 
+#### Стандартный способ
+
 Создаем по пользователю для каждой пары сервис/хост.
 Для каждого нового пользователя вводим пароль.
 
 ```bash
 kadmin
 
-addprinc hdfs/hadoop-master.consultant.ru
-addprinc hdfs/hadoop-slave1.consultant.ru
-addprinc hdfs/hadoop-slave2.consultant.ru
-addprinc hdfs/hadoop-slave3.consultant.ru
+addprinc hdfs-dev1/hadoop-master.consultant.ru
+addprinc hdfs-dev1/hadoop-slave1.consultant.ru
+addprinc hdfs-dev1/hadoop-slave2.consultant.ru
+addprinc hdfs-dev1/hadoop-slave3.consultant.ru
 
-addprinc yarn/hadoop-master.consultant.ru
-addprinc yarn/hadoop-slave1.consultant.ru
-addprinc yarn/hadoop-slave2.consultant.ru
-addprinc yarn/hadoop-slave3.consultant.ru
+addprinc yarn-dev1/hadoop-master.consultant.ru
+addprinc yarn-dev1/hadoop-slave1.consultant.ru
+addprinc yarn-dev1/hadoop-slave2.consultant.ru
+addprinc yarn-dev1/hadoop-slave3.consultant.ru
 
-addprinc mapred/hadoop-master.consultant.ru
-addprinc mapred/hadoop-slave1.consultant.ru
-addprinc mapred/hadoop-slave2.consultant.ru
-addprinc mapred/hadoop-slave3.consultant.ru
+addprinc mapred-dev1/hadoop-master.consultant.ru
+addprinc mapred-dev1/hadoop-slave1.consultant.ru
+addprinc mapred-dev1/hadoop-slave2.consultant.ru
+addprinc mapred-dev1/hadoop-slave3.consultant.ru
 
-addprinc hbase/hadoop-master.consultant.ru
-addprinc hbase/hadoop-slave1.consultant.ru
-addprinc hbase/hadoop-slave2.consultant.ru
-addprinc hbase/hadoop-slave3.consultant.ru
+addprinc hbase-dev1/hadoop-master.consultant.ru
+addprinc hbase-dev1/hadoop-slave1.consultant.ru
+addprinc hbase-dev1/hadoop-slave2.consultant.ru
+addprinc hbase-dev1/hadoop-slave3.consultant.ru
 
 # HTTP - имя пользователя-сервиса, участвующего в SPNEGO-аутентификации.
-addprinc HTTP/hadoop-master.consultant.ru
-addprinc HTTP/hadoop-slave1.consultant.ru
-addprinc HTTP/hadoop-slave2.consultant.ru
-addprinc HTTP/hadoop-slave3.consultant.ru
+addprinc HTTP-dev1/hadoop-master.consultant.ru
+addprinc HTTP-dev1/hadoop-slave1.consultant.ru
+addprinc HTTP-dev1/hadoop-slave2.consultant.ru
+addprinc HTTP-dev1/hadoop-slave3.consultant.ru
 
 # Следующие сервисы разворачиваются только на hadoop-master
-addprinc spark/hadoop-master.consultant.ru
-addprinc hive/hadoop-master.consultant.ru
+addprinc spark-dev1/hadoop-master.consultant.ru
+addprinc hive-dev1/hadoop-master.consultant.ru
 
 quit
+```
+
+#### Автоматизированный способ
+
+Копируем файл [addprinc.sh](../scripts/addprinc.sh) на kdc-сервер.
+
+```bash
+./addprinc.sh hadoop-{master,slave1,slave2,slave3}.consultant.ru
+# Скрипт запросит переменные
+admin password: <пароль от kerberos-пользователя "your_name/admin">
+
+Service: hdfs-dev1
+Password:
+Service: yarn-dev1
+Password:
+Service: mapred-dev1
+Password:
+Service: hbase-dev1
+Password:
+Service: HTTP
+Password:
+# Для остановки цикла нажимаем Ctrl+C
+
+./addprinc.sh hadoop-master.consultant.ru
+admin password:
+
+Service: spark-dev1
+Password:
+Service: hive-dev1
+Password:
+# Ctrl+C
 ```
 
 ## Настройка хостов
 
-### Создание Keytab-ов
-
-Использование keytab-файлов - это способ аутентификации в Kerberos, не требующий ввода пароля. Пароль требуется вводить только при создании keytab-файла. В Kerberos пользователями (principals) являются не только люди, но и сервисы. Для своей аутентификации сервисы используют keytab-файлы.
-
-На каждом hadoop-хосте должен быть свой keytab, расположенный по адресу `/etc/security/krb5.keytab`.
-
-```bash
-sudo ktutil
-
-# Эти учетные записи нужно добавить на каждом хосте, заменив hadoop-master на имя хоста.
-addent -password -p hdfs/hadoop-master.consultant.ru -k 1 -e aes256-cts
-addent -password -p yarn/hadoop-master.consultant.ru -k 1 -e aes256-cts
-addent -password -p mapred/hadoop-master.consultant.ru -k 1 -e aes256-cts
-addent -password -p hbase/hadoop-master.consultant.ru -k 1 -e aes256-ctsaddent -password -p HTTP/hadoop-master.consultant.ru -k 1 -e aes256-cts
-
-# Эти учетные записи нужно добавить только на хосте hadoop-master
-addent -password -p spark/hadoop-master.consultant.ru -k 1 -e aes256-cts
-addent -password -p hive/hadoop-master.consultant.ru -k 1 -e aes256-cts
-
-wkt /etc/security/krb5.keytab
-
-quit
-```
-
-```bash
-sudo chown hadoop:hadoop /etc/security/krb5.keytab
-sudo chmod g+r /etc/security/krb5.keytab
-ll /etc/security/krb5.keytab
-```
+Kerberos на хостах настраивается автоматически.
 
 ## Проверка работоспособности HDFS
 
 Когда HDFS запущена в Secure Mode, следующие команды должны выполняться без ошибок:
 
 ```bash
-# [hdfs@hadoop-master.consultant.ru]
-kinit hdfs/$(hostname -f) -kt /etc/security/krb5.keytab
-curl -i --negotiate -u : "http://host1.consultant.ru:9870/webhdfs/v1/?op=LISTSTATUS"
+# [hdfs-dev1@hadoop-master.consultant.ru]
+kinit $(whoami)/$(hostname -f) -kt /etc/security/krb5.keytab
+curl -i --negotiate -u : "http://host1.consultant.ru:$DFS_NAMENODE_HTTP_PORT/webhdfs/v1/?op=LISTSTATUS"
 ```
 
 А следующая команда должна вернуть ошибку аутентификации:
 
 ```bash
-# [hdfs@hadoop-master.consultant.ru]
-kinit hdfs/$(hostname -f) -kt /etc/security/krb5.keytab
-curl -i "http://host1.consultant.ru:9870/webhdfs/v1/?op=LISTSTATUS"
+# [hdfs-dev1@hadoop-master.consultant.ru]
+kinit $(whoami)/$(hostname -f) -kt /etc/security/krb5.keytab
+curl -i "http://host1.consultant.ru:$DFS_NAMENODE_HTTP_PORT/webhdfs/v1/?op=LISTSTATUS"
 ```
 
 ## Настройка Windows

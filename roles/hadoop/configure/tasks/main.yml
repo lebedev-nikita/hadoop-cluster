@@ -1,9 +1,9 @@
 - name: fill configuration files
   template:
     src: "{{ item }}.j2"
-    dest: "/opt/hadoop/{{ item }}"
-    owner: hadoop
-    group: hadoop
+    dest: "{{ opt_dir }}/hadoop/{{ item }}"
+    owner: "{{ hadoop_user }}"
+    group: "{{ hadoop_user }}"
   loop:
     - etc/hadoop/core-site.xml
     - etc/hadoop/hdfs-site.xml
@@ -17,6 +17,6 @@
   file:
     path: "{{ item }}"
     state: directory
-    owner: hdfs
-    group: hadoop
+    owner: "{{ hdfs_user }}"
+    group: "{{ hadoop_user }}"
   loop: "{{ datanode_data_dirs + namenode_data_dirs }}"

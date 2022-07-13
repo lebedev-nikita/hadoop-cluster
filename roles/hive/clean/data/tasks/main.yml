@@ -1,5 +1,5 @@
 - name: remove metastore pg
-  become_user: hive
+  become_user: "{{ hive_user }}"
   shell: "dropdb {{ hive_db_name }}"
   register: result
   failed_when: result.rc != 0 and 'does not exist' not in result.stderr

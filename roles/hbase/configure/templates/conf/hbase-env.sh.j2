@@ -1,1 +1,11 @@
+export JAVA_TOOL_OPTIONS=-Dcluster.mode={{ cluster_mode }}
+
+export HBASE_HOME={{ opt_dir }}/hbase
 export HBASE_MANAGES_ZK=false
+
+export HADOOP_HOME={{ opt_dir }}/hadoop
+export HADOOP_CONF_DIR={{ opt_dir }}/hadoop/etc/hadoop
+
+export PATH=${PATH}:{{ opt_dir }}/hadoop/bin
+export PATH=${PATH}:{{ opt_dir }}/hbase/bin
+export PATH=${PATH}:{{ opt_dir }}/hive/bin

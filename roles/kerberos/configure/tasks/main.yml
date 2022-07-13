@@ -5,3 +5,40 @@
     dest: "/{{ item }}"
   loop:
     - etc/krb5.conf
+
+- name: remove old keytab
+  become: yes
+  shell: "rm -rf {{ keytab_path }}"
+
+- name: fill keytab
+  become: yes
+  when: host_in_masters or not (item.master_only | default(False))
+  shell: |
+    line1="addent -password -p {{ item.user }}/{{ inventory_hostname }} -k 1 -e aes256-cts"
+    line2="{{ item.password }}"
+    line3="wkt {{ keytab_path }}"
+    printf "$line1\n$line2\n$line3" | ktutil
+  loop:
+    - { user: "{{ hdfs_user }}", password: "{{ kerberos_password_hdfs }}" }
+    - { user: "{{ yarn_user }}", password: "{{ kerberos_password_yarn }}" }
+    - { user: "{{ mapred_user }}", password: "{{ kerberos_password_mapred }}" }
+    - { user: "{{ hbase_user }}", password: "{{ kerberos_password_hbase }}" }
+    - { user: HTTP, password: "{{ kerberos_password_HTTP }}" }
+    - {
+        user: "{{ spark_user }}",
+        password: "{{ kerberos_password_spark }}",
+        master_only: True,
+      }
+    - {
+        user: "{{ hive_user }}",
+        password: "{{ kerberos_password_hive }}",
+        master_only: True,
+      }
+
+- name: change keytab rights
+  become: yes
+  file:
+    path: "{{ keytab_path }}"
+    owner: "{{ hadoop_user }}"
+    group: "{{ hadoop_user }}"
+    mode: "640"

@@ -1,15 +1,18 @@
 - name: execute jps
   become: yes
-  shell: jps
+  shell: "jps -v | grep -- -Dcluster.mode={{ cluster_mode }}"
   register: jps_output
+  failed_when: not jps_output.rc in [0, 1]
 
 - name: set facts about processes
   set_fact:
+    zookeeper_is_running: '{{ "QuorumPeerMain" in jps_output.stdout }}'
     hdfs_is_running: '{{ "NameNode" in jps_output.stdout }}'
     namenode_pid: '{{ jps_output.stdout | regex_search("\d+ NameNode") | regex_search("\d+") }}'
     yarn_is_running: '{{ "ResourceManager" in jps_output.stdout }}'
     mapred_is_running: '{{ "JobHistoryServer" in jps_output.stdout }}'
     hbase_is_running: '{{ "HMaster" in jps_output.stdout }}'
+    hbase_rest_server_is_running: '{{ "RESTServer" in jps_output.stdout }}'
     spark_history_server_is_running: '{{ " HistoryServer" in jps_output.stdout }}'
     hiveserver2_is_running: '{{ "RunJar" in jps_output.stdout }}'
     hiveserver2_pid: '{{ jps_output.stdout | regex_search("\d+ RunJar") | regex_search("\d+") }}'

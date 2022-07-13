@@ -5,4 +5,4 @@
     archive_file: apache-zookeeper-3.8.0-bin.tar.gz
     unarchived_dir: apache-zookeeper-3.8.0-bin
     link: zookeeper
-    owner: zookeeper
+    owner: "{{ zookeeper_user }}"

@@ -2,4 +2,4 @@
   when: spark_history_server_is_running
 
 - name: remove spark dirs
-  shell: rm -rf /opt/spark*
+  shell: "rm -rf {{ opt_dir }}/spark*"

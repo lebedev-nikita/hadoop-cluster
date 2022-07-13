@@ -1,6 +1,12 @@
+- import_role: role=common/kinit
+  become_user: "{{ hbase_user }}"
+
 - name: start hbase
   when: not hbase_is_running
-  become_user: hbase
-  shell: |
-    . /etc/bash.bashrc
-    nohup /opt/hbase/bin/start-hbase.sh > /opt/hbase/logs/hbase.nohup.out
+  become_user: "{{ hbase_user }}"
+  shell: "nohup {{ opt_dir }}/hbase/bin/start-hbase.sh 2>&1 > {{ opt_dir }}/hbase/logs/hbase.nohup.out"
+
+- name: start hbase rest server
+  when: not hbase_rest_server_is_running
+  become_user: "{{ hbase_user }}"
+  shell: "nohup {{ opt_dir }}/hbase/bin/hbase-daemon.sh start rest 2>&1 > {{ opt_dir }}/hbase/logs/hbase.rest.nohup.out"

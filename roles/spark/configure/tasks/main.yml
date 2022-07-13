@@ -1,8 +1,9 @@
 - name: fill configuration files
   template:
     src: "{{ item }}.j2"
-    dest: "/opt/spark/{{ item }}"
-    owner: spark
-    group: hadoop
+    dest: "{{ opt_dir }}/spark/{{ item }}"
+    owner: "{{ spark_user }}"
+    group: "{{ hadoop_user }}"
   loop:
     - conf/spark-defaults.conf
+    - conf/spark-env.sh

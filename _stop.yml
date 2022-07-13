@@ -10,3 +10,5 @@
       when: (services is not defined or "hbase" in services) and host_in_masters
     - role: hadoop/stop
       when: (services is not defined or "hadoop" in services) and host_in_masters
+    - role: zookeeper/stop
+      when: (services is not defined or "zookeeper" in services) and host_in_zk_hosts

@@ -1,2 +1,2 @@
 - name: remove hive dirs
-  shell: rm -rf /opt/*hive*
+  shell: "rm -rf {{ opt_dir }}/*hive*"

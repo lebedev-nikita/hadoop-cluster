@@ -4,4 +4,8 @@
 - shell: "rm -rf {{ item }}/hdfs/*"
   loop: "{{ data_dirs }}"
 
-- shell: rm -rf /tmp/hadoop-hadoop-*
+- shell: |
+    rm -rf /tmp/*hadoop*
+    rm -rf /tmp/*yarn*
+    rm -rf /tmp/*hdfs*
+    rm -rf /tmp/*mapred*

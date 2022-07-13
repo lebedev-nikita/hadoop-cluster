@@ -1,7 +1,7 @@
 - name: fill configuration files
   template:
     src: "{{ item }}.j2"
-    dest: "/opt/hive/{{ item }}"
+    dest: "{{ opt_dir }}/hive/{{ item }}"
   loop:
     - conf/hive-env.sh
     - conf/hive-site.xml

@@ -1,6 +1,6 @@
 - name: start zk service
   become: yes
   systemd:
-    name: zk
+    name: "zk-{{ cluster_mode }}"
     state: started
     enabled: yes

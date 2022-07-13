@@ -1,5 +1,3 @@
 - name: refresh yarn queues
-  become_user: yarn
-  shell: |
-    . /etc/bash.bashrc
-    yarn rmadmin -refreshQueues
+  become_user: "{{ yarn_user }}"
+  shell: "{{ opt_dir }}/hadoop/bin/yarn rmadmin -refreshQueues"

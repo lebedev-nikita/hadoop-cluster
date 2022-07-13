@@ -3,6 +3,10 @@
     <name>dfs.replication</name>
     <value>3</value>
   </property>
+  <property>
+    <name>dfs.permissions.superusergroup</name>
+    <value>{{ hadoop_user }}</value>
+  </property>
   
   <property>
     <name>dfs.namenode.name.dir</name>
@@ -12,25 +16,39 @@
     <name>dfs.datanode.data.dir</name>
     <value>{{ datanode_data_dirs | join(',') }}</value>
   </property>
-  <property>
-    <name>dfs.permissions.superusergroup</name>
-    <value>hadoop</value>
-  </property>
 
-  <property>
-    <name>dfs.namenode.ec.system.default.policy</name>
-    <value>{{ erasure_coding_policy | default('RS-3-2-1024k') }}</value>
-  </property>
+  {% for service, port in [
+      [ "namenode",            dfs_namenode_http_port           ],
+      [ "namenode.secondary",  dfs_namenode_secondary_http_port ],
+    ]
+  %}
+    <property>
+      <name>dfs.{{ service }}.http-address</name>
+      <value>0.0.0.0:{{ port }}</value>
+    </property>
+  {% endfor %}
+
+  {% for service, port in [
+      [ "datanode",          dfs_datanode_port      ],
+      [ "datanode.http",     dfs_datanode_http_port ],
+      [ "datanode.ipc",      dfs_datanode_ipc_port  ],
+    ]
+  %}
+    <property>
+      <name>dfs.{{ service }}.address</name>
+      <value>0.0.0.0:{{ port }}</value>
+    </property>
+  {% endfor %}
 
   {% if use_secure_mode %}
     {% for service in ["namenode", "secondary.namenode", "datanode"] %}
       <property>
-        <name>dfs.{{ service }}.keytab.file</name>
-        <value>{{ keytab_path }}</value>
+        <name>dfs.{{ service }}.kerberos.principal</name>
+        <value>{{ hdfs_user }}/_HOST@{{ kdc_realm }}</value>
       </property>
       <property>
-        <name>dfs.{{ service }}.kerberos.principal</name>
-        <value>hdfs/_HOST@{{ kdc_realm }}</value>
+        <name>dfs.{{ service }}.keytab.file</name>
+        <value>{{ keytab_path }}</value>
       </property>
     {% endfor %}
 

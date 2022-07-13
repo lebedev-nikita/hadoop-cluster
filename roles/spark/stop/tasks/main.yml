@@ -1,6 +1,7 @@
-- name: stop spark
-  become_user: spark
+- import_role: role=common/kinit
+  become_user: "{{ spark_user }}"
+
+- name: stop spark history server
+  become_user: "{{ spark_user }}"
   when: spark_history_server_is_running
-  shell: |
-    . /etc/bash.bashrc
-    /opt/spark/sbin/stop-history-server.sh
+  shell: "{{ opt_dir }}/spark/sbin/stop-history-server.sh"

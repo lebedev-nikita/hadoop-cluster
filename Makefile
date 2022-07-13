@@ -8,8 +8,14 @@ endif
 ifndef ANSIBLE_INVENTORY
 	$(error ENV VARIABLE "ANSIBLE_INVENTORY" IS NOT DEFINED)
 endif
+ifeq ("$(wildcard inventory.$(ANSIBLE_MODE))", "")
+	$(error FILE "inventory.$(ANSIBLE_MODE)" DOES NOT EXIST")
+endif
 ifeq ("$(wildcard inventory.$(ANSIBLE_MODE).password)", "")
 	$(error FILE "inventory.$(ANSIBLE_MODE).password" DOES NOT EXIST")
+endif
+ifeq ("$(wildcard inventory.$(ANSIBLE_MODE).ports)", "")
+	$(error FILE "inventory.$(ANSIBLE_MODE).ports" DOES NOT EXIST")
 endif
 
 init: _test
@@ -33,10 +39,10 @@ refresh_queues: _test
 reinit: stop init start
 reconfigure: stop configure start
 
-# DANGROUS_start_with_formatting: _test
-# 	ansible-playbook _start.yml -e '{ "need_format": true }'
+DANGROUS_start_with_formatting: _test
+	ansible-playbook _start.yml -e '{ "need_format": true }'
 
-# DANGROUS_restart_with_formatting: stop
-# 	ansible-playbook _clean_data_DANGEROUS.yml
-# 	ansible-playbook _configure.yml
+# reformat_DANGEROUS: stop
+# 	ansible-playbook _clean_data_DANGEROUS.yml && \
+# 	ansible-playbook _configure.yml && \
 # 	ansible-playbook _start.yml -e '{ "need_format": true }'

@@ -2,9 +2,15 @@
   become: yes
   roles:
     - role: common/register_running_services
+    - role: hbase/clean/data
     - role: hadoop/clean/data
 
 - hosts: masters
   become: yes
   roles:
     - role: hive/clean/data
+
+- hosts: zk_hosts
+  become: yes
+  roles:
+    - role: zookeeper/clean/data

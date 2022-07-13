@@ -6,12 +6,12 @@ After=network.target
 
 [Service]    
 Type=forking
-WorkingDirectory=/opt/zookeeper
-User=zookeeper
-Group=hadoop
-ExecStart=/opt/zookeeper/bin/zkServer.sh start /opt/zookeeper/conf/zoo.cfg
-ExecStop=/opt/zookeeper/bin/zkServer.sh stop /opt/zookeeper/conf/zoo.cfg
-ExecReload=/opt/zookeeper/bin/zkServer.sh restart /opt/zookeeper/conf/zoo.cfg
+WorkingDirectory={{ opt_dir }}/zookeeper
+User={{ zookeeper_user }}
+Group={{ hadoop_user }}
+ExecStart={{ opt_dir }}/zookeeper/bin/zkServer.sh    start    {{ opt_dir }}/zookeeper/conf/zoo.cfg
+ExecStop={{ opt_dir }}/zookeeper/bin/zkServer.sh     stop     {{ opt_dir }}/zookeeper/conf/zoo.cfg
+ExecReload={{ opt_dir }}/zookeeper/bin/zkServer.sh   restart  {{ opt_dir }}/zookeeper/conf/zoo.cfg
 TimeoutSec=30
 Restart=on-failure
 

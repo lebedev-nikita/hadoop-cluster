@@ -14,3 +14,4 @@
   roles:
     - role: hbase/clean/downloads
     - role: hadoop/clean/downloads
+    - role: zookeeper/clean/downloads

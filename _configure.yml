@@ -1,10 +1,10 @@
 - hosts: all
   become: yes
   roles:
+    - role: kerberos/configure
+      when: (services is not defined or "kerberos" in services) and use_secure_mode
     - role: zookeeper/configure
       when: (services is not defined or "zookeeper" in services) and host_in_zk_hosts
-    - role: kerberos/configure
-      when: (services is not defined or "kerberos" in services)
     - role: hadoop/configure
       when: (services is not defined or "hadoop" in services)
     - role: hbase/configure

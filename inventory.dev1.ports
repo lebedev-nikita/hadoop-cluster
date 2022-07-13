@@ -1,0 +1,40 @@
+[all:vars]
+zk_client_port = 8100
+zk_quorum_port = 8101
+zk_leader_election_port = 8102
+
+core_default_fs_port = 8103
+
+dfs_namenode_http_port = 8104
+dfs_namenode_secondary_http_port = 8105
+
+dfs_datanode_port = 8106
+dfs_datanode_http_port = 8107
+dfs_datanode_ipc_port = 8108
+
+yarn_resourcemanager_port = 8109
+yarn_resourcemanager_scheduler_port = 8110
+yarn_resourcemanager_webapp_port = 8111
+yarn_resourcemanager_resource_tracker_port = 8112
+yarn_resourcemanager_admin_port = 8113
+
+yarn_nodemanager_localizer_port = 8114
+yarn_nodemanager_webapp_port = 8115
+yarn_nodemanager_port = 8116
+
+mapreduce_jobhistory_port = 8117
+mapreduce_jobhistory_webapp_port = 8118
+mapreduce_jobhistory_admin_port = 8119
+mapreduce_shuffle_port = 8120
+
+hbase_master_port = 8121
+hbase_master_info_port = 8122
+hbase_regionserver_port = 8123
+hbase_regionserver_info_port = 8124
+hbase_rest_port = 8125
+hbase_rest_info_port = 8126
+
+spark_history_ui_port = 8127
+
+hive_server2_thrift_port = 8128
+hive_server2_webui_port = 8129

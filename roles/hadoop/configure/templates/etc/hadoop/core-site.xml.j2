@@ -1,15 +1,10 @@
 <configuration>
   <property>
     <name>fs.defaultFS</name>
-    <value>hdfs://{{ master_host }}:19000</value>
+    <value>hdfs://{{ master_host }}:{{ core_default_fs_port }}</value>
   </property>
 
-  <property>
-    <name>dfs.namenode.secondary.http-address</name>
-    <value>{{ master_host }}:50090</value>
-  </property>
-
-  {% for user in ["HTTP", "hdfs", "hive"] %}
+  {% for user in [hdfs_user, hive_user] %}
     <property>
       <name>hadoop.proxyuser.{{ user }}.hosts</name>
       <value>*</value>
@@ -20,36 +15,27 @@
     </property>
   {% endfor %}
 
+  <property>
+    <name>ipc.client.fallback-to-simple-auth-allowed</name>
+    <value>true</value>
+    <description>
+      Позволяет копировать данные из незащищенного кластера в защищенный
+    </description>
+  </property>
+
   {% if use_secure_mode %}
-    <property>
-      <name>hadoop.security.authorization</name>
-      <value>true</value>
-    </property>
     <property>
       <name>hadoop.security.authentication</name>
       <value>kerberos</value>
     </property>
     <property>
-      <name>hadoop.security.authentication.type</name>
-      <value>kerberos</value>
-    </property>
-    <property>
-      <name>hadoop.rpc.protection</name>
-      <value>authentication</value>
-    </property>
-    <property>
-      <name>ipc.client.fallback-to-simple-auth-allowed</name>
-      <value>true</value> 
-      <description>Позволяет копировать данные из незащищенного кластера в защищенный</description>
+      <name>hadoop.security.authorization</name>
+      <value>true</value>
     </property>
 
     <property>
-      <name>hadoop.http.authentication.kerberos.principal</name>
-      <value>HTTP/{{ master_host }}@{{ kdc_realm }}</value>
-    </property>
-    <property>
-      <name>hadoop.http.authentication.kerberos.keytab</name>
-      <value>{{ keytab_path }}</value>
+      <name>hadoop.rpc.protection</name>
+      <value>authentication</value>
     </property>
 
     <property>
@@ -57,8 +43,12 @@
       <value>kerberos</value>
     </property>
     <property>
-      <name>hadoop.http.staticuser.user</name>
-      <value>HTTP</value>
+      <name>hadoop.http.authentication.kerberos.principal</name>
+      <value>HTTP/_HOST@{{ kdc_realm }}</value>
+    </property>
+    <property>
+      <name>hadoop.http.authentication.kerberos.keytab</name>
+      <value>{{ keytab_path }}</value>
     </property>
   {% endif %}
 </configuration>

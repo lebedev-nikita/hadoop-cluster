@@ -1,22 +1,24 @@
 - import_tasks: install_packages.yml
 
-- name: configure /etc/hosts and /etc/bash.bashrc
+- name: configure /etc/hosts
   template:
-    src: "{{ item }}.j2"
-    dest: "/{{ item }}"
-  loop:
-    - etc/hosts
-    - etc/bash.bashrc
+    src: "etc/hosts.j2"
+    dest: "/etc/hosts"
 
 - name: set hostname
   hostname:
     name: "{{ inventory_hostname }}"
 
-- name: create user and group "hadoop"
+# При создании пользователя hadoop_user создается одноименная группа.
+# Все пользователи-сервисы кластера будут входить в группу hadoop_user.
+# От имени пользователя hadoop_user не будут запускаться программы.
+# Пользователь hadoop_user будет owener'ом файлов и папок,
+# относящихся к нескольким пользователям-сервисам (напр hdfs и yarn).
+- name: create user and group "{{ hadoop_user }}"
   user:
-    name: hadoop
-    shell: /bin/bash
+    name: "{{ hadoop_user }}"
     umask: "007"
+    state: present
 
 - name: configure "root"
   become: yes
@@ -31,19 +33,33 @@
     generate_ssh_key: yes
     groups:
       - sudo
-      - hadoop
+      - "{{ hadoop_user }}"
     append: yes
     shell: /bin/bash
     umask: "007"
   loop:
-    - zookeeper
-    - hdfs
-    - yarn
-    - mapred
-    - hbase
-    - spark
-    - hive
+    - "{{ zookeeper_user }}"
+    - "{{ hdfs_user }}"
+    - "{{ yarn_user }}"
+    - "{{ mapred_user }}"
+    - "{{ hbase_user }}"
+    - "{{ spark_user }}"
+    - "{{ hive_user }}"
     - HTTP
+
+- name: fill .bashrc
+  become_user: "{{ item }}"
+  template:
+    src: home/~/.bashrc.j2
+    dest: ~/.bashrc
+  loop:
+    - "{{ zookeeper_user }}"
+    - "{{ hdfs_user }}"
+    - "{{ yarn_user }}"
+    - "{{ mapred_user }}"
+    - "{{ hbase_user }}"
+    - "{{ spark_user }}"
+    - "{{ hive_user }}"
 
 - include_role:
     role: common/configure_ssh_connections
@@ -52,21 +68,22 @@
     from_hosts: "{{ groups[item.from_hosts] }}"
     to_hosts: "{{ groups[item.to_hosts] }}"
   loop:
-    - { user: zookeeper, from_hosts: zk_hosts, to_hosts: zk_hosts }
     - { user: root, from_hosts: masters, to_hosts: all }
-    - { user: hdfs, from_hosts: masters, to_hosts: all }
-    - { user: yarn, from_hosts: masters, to_hosts: all }
-    - { user: hbase, from_hosts: masters, to_hosts: all }
+    - { user: "{{ zookeeper_user }}", from_hosts: zk_hosts, to_hosts: zk_hosts }
+    - { user: "{{ hdfs_user }}", from_hosts: masters, to_hosts: all }
+    - { user: "{{ yarn_user }}", from_hosts: masters, to_hosts: all }
+    - { user: "{{ hbase_user }}", from_hosts: masters, to_hosts: all }
 
 - name: create /opt directory
   file:
-    path: /opt
+    path: "{{ opt_dir }}"
     state: directory
-    group: hadoop
+    group: "{{ hadoop_user }}"
+    recurse: yes
 
 - name: configure data dirs
   file:
     path: "{{ item }}"
     state: directory
-    group: hadoop
+    group: "{{ hadoop_user }}"
   loop: "{{ data_dirs }}"

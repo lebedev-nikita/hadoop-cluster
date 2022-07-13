@@ -1,4 +1,4 @@
 - fail:
   when: hbase_is_running
 
-- shell: rm -rf /opt/hbase*
+- shell: "rm -rf {{ opt_dir }}/hbase*"

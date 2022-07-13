@@ -1,11 +1,7 @@
-- set_fact:
-    _base: "{{ base | default('/opt') }}"
-
 - name: "[{{ link }}] debug"
   debug:
     msg:
       {
-        base: "{{ _base }}",
         link: "{{ link }}",
         url: "{{ url }}",
         owner: "{{ owner }}",
@@ -15,7 +11,7 @@
 - name: "[{{ link }}] download service"
   get_url:
     url: "{{ url }}"
-    dest: "{{ _base }}/{{ archive_file }}"
+    dest: "{{ opt_dir }}/{{ archive_file }}"
     timeout: 60
   environment:
     http_proxy: "{{ http_proxy }}"
@@ -23,29 +19,31 @@
 
 - name: "[{{ link }}] unarchive"
   unarchive:
-    src: "{{ _base }}/{{ archive_file }}"
-    dest: "{{ _base }}"
+    src: "{{ opt_dir }}/{{ archive_file }}"
+    dest: "{{ opt_dir }}"
     remote_src: yes
     owner: "{{ owner }}"
-    group: hadoop
-    creates: "{{ _base }}/{{ unarchived_dir }}"
+    group: "{{ hadoop_user }}"
+    creates: "{{ opt_dir }}/{{ unarchived_dir }}"
 
 - name: "[{{ link }}] change owner"
   become: yes
-  shell: "chown -R {{ owner }}:hadoop {{ _base }}/{{ unarchived_dir }} "
+  shell: |
+    chown -R {{ owner }}:{{ hadoop_user }} {{ opt_dir }}/{{ unarchived_dir }}
+    chmod ug+rw -R {{ opt_dir }}/{{ unarchived_dir }}
 
 - name: "[{{ link }}] link"
   file:
-    src: "{{ _base }}/{{ unarchived_dir }}"
-    path: "{{ _base }}/{{ link }}"
+    src: "{{ opt_dir }}/{{ unarchived_dir }}"
+    path: "{{ opt_dir }}/{{ link }}"
     state: link
     owner: "{{ owner }}"
-    group: hadoop
+    group: "{{ hadoop_user }}"
 
 - name: "[{{ link }}] create logs directory"
   file:
-    path: "{{ _base }}/{{ link }}/logs"
+    path: "{{ opt_dir }}/{{ link }}/logs"
     state: directory
     owner: "{{ owner }}"
-    group: hadoop
+    group: "{{ hadoop_user }}"
     mode: "775"

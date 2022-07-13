@@ -1,6 +1,4 @@
 - name: start HiveServer2
   when: not hiveserver2_is_running
-  become_user: hive
-  shell: |
-    . /etc/bash.bashrc
-    nohup /opt/hive/bin/hiveserver2 > /opt/hive/logs/hive.nohup.out &
+  become_user: "{{ hive_user }}"
+  shell: "nohup {{ opt_dir }}/hive/bin/hiveserver2 2>&1 > {{ opt_dir }}/hive/logs/hive.nohup.out &"

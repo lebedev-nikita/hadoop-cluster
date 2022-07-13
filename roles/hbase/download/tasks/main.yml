@@ -5,4 +5,4 @@
     archive_file: hbase-2.4.9-bin.tar.gz
     unarchived_dir: hbase-2.4.9
     link: hbase
-    owner: hbase
+    owner: "{{ hbase_user }}"

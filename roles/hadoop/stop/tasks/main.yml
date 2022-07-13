@@ -1,20 +1,23 @@
+- import_role: role=common/kinit
+  become_user: "{{ hdfs_user }}"
+
+- import_role: role=common/kinit
+  become_user: "{{ yarn_user }}"
+
+- import_role: role=common/kinit
+  become_user: "{{ mapred_user }}"
+
 - name: stop mapred
-  become_user: mapred
+  become_user: "{{ mapred_user }}"
   when: mapred_is_running
-  shell: |
-    . /etc/bash.bashrc
-    /opt/hadoop/bin/mapred --daemon stop historyserver
+  shell: "{{ opt_dir }}/hadoop/bin/mapred --daemon stop historyserver"
 
 - name: stop yarn
-  become_user: yarn
+  become_user: "{{ yarn_user }}"
   when: yarn_is_running
-  shell: |
-    . /etc/bash.bashrc
-    /opt/hadoop/sbin/stop-yarn.sh
+  shell: "{{ opt_dir }}/hadoop/sbin/stop-yarn.sh"
 
 - name: stop hdfs
   become: yes
   when: hdfs_is_running
-  shell: |
-    . /etc/bash.bashrc
-    /opt/hadoop/sbin/stop-dfs.sh
+  shell: "{{ opt_dir }}/hadoop/sbin/stop-dfs.sh"

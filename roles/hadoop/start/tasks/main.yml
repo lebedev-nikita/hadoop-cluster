@@ -1,28 +1,31 @@
+- import_role: role=common/kinit
+  become_user: "{{ hdfs_user }}"
+
+- import_role: role=common/kinit
+  become_user: "{{ yarn_user }}"
+
+- import_role: role=common/kinit
+  become_user: "{{ mapred_user }}"
+
 - name: create "hdfs.nohup.out" file with correct owner
   become: yes
   copy:
     content: ""
-    dest: /opt/hadoop/logs/hdfs.nohup.out
-    owner: hdfs
-    group: hadoop
+    dest: "{{ opt_dir }}/hadoop/logs/hdfs.nohup.out"
+    owner: "{{ hdfs_user }}"
+    group: "{{ hadoop_user }}"
 
 - name: start hdfs
   when: not hdfs_is_running
   become: yes
-  shell: |
-    . /etc/bash.bashrc
-    nohup /opt/hadoop/sbin/start-dfs.sh > /opt/hadoop/logs/hdfs.nohup.out
+  shell: "nohup {{ opt_dir }}/hadoop/sbin/start-dfs.sh 2>&1 > {{ opt_dir }}/hadoop/logs/hdfs.nohup.out"
 
 - name: start yarn
   when: not yarn_is_running
-  become_user: yarn
-  shell: |
-    . /etc/bash.bashrc
-    nohup /opt/hadoop/sbin/start-yarn.sh > /opt/hadoop/logs/yarn.nohup.out
+  become_user: "{{ yarn_user }}"
+  shell: "nohup {{ opt_dir }}/hadoop/sbin/start-yarn.sh 2>&1 > {{ opt_dir }}/hadoop/logs/yarn.nohup.out"
 
 - name: start mapreduce history server
   when: not mapred_is_running
-  become_user: mapred
-  shell: |
-    . /etc/bash.bashrc
-    nohup /opt/hadoop/bin/mapred --daemon start historyserver > /opt/hadoop/logs/mapred-history-server.nohup.out
+  become_user: "{{ mapred_user }}"
+  shell: "nohup {{ opt_dir }}/hadoop/bin/mapred --daemon start historyserver 2>&1 > {{ opt_dir }}/hadoop/logs/mapred-history-server.nohup.out"

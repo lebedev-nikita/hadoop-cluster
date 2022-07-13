@@ -1,6 +1,9 @@
-. /etc/bash.bashrc
+export JAVA_TOOL_OPTIONS=-Dcluster.mode={{ cluster_mode }}
 
-HDFS_NAMENODE_USER=hdfs
-HDFS_SECONDARYNAMENODE_USER=hdfs
-HDFS_DATANODE_SECURE_USER=hdfs
-JSVC_HOME=/usr/bin
+export HADOOP_HOME={{ opt_dir }}/hadoop
+export HADOOP_CONF_DIR={{ opt_dir }}/hadoop/etc/hadoop
+
+export HDFS_NAMENODE_USER={{ hdfs_user }}
+export HDFS_SECONDARYNAMENODE_USER={{ hdfs_user }}
+export HDFS_DATANODE_SECURE_USER={{ hdfs_user }}
+export JSVC_HOME=/usr/bin
