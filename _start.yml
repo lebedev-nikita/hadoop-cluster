@@ -18,5 +18,3 @@
       when: (services is not defined or "hive" in services) and host_in_masters
     - role: hive/start
       when: (services is not defined or "hive" in services) and host_in_masters
-    - role: nifi/start
-      when: (services is not defined or "nifi" in services) and host_in_nifi_hosts

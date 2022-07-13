@@ -44,7 +44,6 @@
     - spark
     - hive
     - HTTP
-    - nifi
 
 - include_role:
     role: common/configure_ssh_connections

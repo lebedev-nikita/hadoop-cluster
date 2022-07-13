@@ -11,11 +11,6 @@ host1.consultant.ru
 host2.consultant.ru
 host3.consultant.ru
 
-[nifi_hosts]
-host1.consultant.ru
-host2.consultant.ru
-host3.consultant.ru
-
 [all:vars]
 http_proxy = ""
 

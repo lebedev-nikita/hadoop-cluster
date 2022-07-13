@@ -80,11 +80,6 @@ addprinc hbase/hadoop-slave1.consultant.ru
 addprinc hbase/hadoop-slave2.consultant.ru
 addprinc hbase/hadoop-slave3.consultant.ru
 
-addprinc nifi/hadoop-master.consultant.ru
-addprinc nifi/hadoop-slave1.consultant.ru
-addprinc nifi/hadoop-slave2.consultant.ru
-addprinc nifi/hadoop-slave3.consultant.ru
-
 # HTTP - имя пользователя-сервиса, участвующего в SPNEGO-аутентификации.
 addprinc HTTP/hadoop-master.consultant.ru
 addprinc HTTP/hadoop-slave1.consultant.ru
@@ -113,9 +108,7 @@ sudo ktutil
 addent -password -p hdfs/hadoop-master.consultant.ru -k 1 -e aes256-cts
 addent -password -p yarn/hadoop-master.consultant.ru -k 1 -e aes256-cts
 addent -password -p mapred/hadoop-master.consultant.ru -k 1 -e aes256-cts
-addent -password -p hbase/hadoop-master.consultant.ru -k 1 -e aes256-cts
-addent -password -p nifi/hadoop-master.consultant.ru -k 1 -e aes256-cts
-addent -password -p HTTP/hadoop-master.consultant.ru -k 1 -e aes256-cts
+addent -password -p hbase/hadoop-master.consultant.ru -k 1 -e aes256-ctsaddent -password -p HTTP/hadoop-master.consultant.ru -k 1 -e aes256-cts
 
 # Эти учетные записи нужно добавить только на хосте hadoop-master
 addent -password -p spark/hadoop-master.consultant.ru -k 1 -e aes256-cts

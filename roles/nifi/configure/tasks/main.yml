@@ -1,9 +1,0 @@
-- name: fill configuration files
-  template:
-    src: "{{ item }}.j2"
-    dest: "/opt/nifi/{{ item }}"
-    owner: nifi
-    group: hadoop
-  loop:
-    - conf/nifi.properties
-    - conf/state-management.xml

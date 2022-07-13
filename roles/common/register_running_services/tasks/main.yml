@@ -13,4 +13,3 @@
     spark_history_server_is_running: '{{ " HistoryServer" in jps_output.stdout }}'
     hiveserver2_is_running: '{{ "RunJar" in jps_output.stdout }}'
     hiveserver2_pid: '{{ jps_output.stdout | regex_search("\d+ RunJar") | regex_search("\d+") }}'
-    nifi_is_running: '{{ "NiFi" in jps_output.stdout }}'

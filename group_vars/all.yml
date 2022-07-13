@@ -7,4 +7,3 @@ hive_db_password: hive
 
 host_in_masters: "{{ inventory_hostname in groups['masters'] }}"
 host_in_zk_hosts: "{{ inventory_hostname in groups['zk_hosts'] }}"
-host_in_nifi_hosts: "{{ inventory_hostname in groups['nifi_hosts'] }}"

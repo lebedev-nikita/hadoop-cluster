@@ -120,18 +120,17 @@ ansible-playbook <playbook_name> -e '{ "services": ["hadoop", "hive", "spark"], 
 
 # Адреса UI
 
-| Имя сервиса        | url                                   |
-| :----------------- | :------------------------------------ |
-| HDFS NameNode      | http://host1.consultant.ru:9870       |
-| HDFS DataNode      | http://host2.consultant.ru:9864       |
-| YARN UI            | http://host1.consultant.ru:8088       |
-| YARN UI 2          | http://host1.consultant.ru:8088/ui2   |
-| YARN Node          | http://host2.consultant.ru:8042       |
-| Mapred History     | http://host1.consultant.ru:19888      |
-| HBASE Master       | http://host1.consultant.ru:16010      |
-| Spark History      | http://host1.consultant.ru:18080      |
-| Hive Thrift Server | http://host1.consultant.ru:10000      |
-| NiFi               | http://host1.consultant.ru:8443/nifi/ |
+| Имя сервиса        | url                                 |
+| :----------------- | :---------------------------------- |
+| HDFS NameNode      | http://host1.consultant.ru:9870     |
+| HDFS DataNode      | http://host2.consultant.ru:9864     |
+| YARN UI            | http://host1.consultant.ru:8088     |
+| YARN UI 2          | http://host1.consultant.ru:8088/ui2 |
+| YARN Node          | http://host2.consultant.ru:8042     |
+| Mapred History     | http://host1.consultant.ru:19888    |
+| HBASE Master       | http://host1.consultant.ru:16010    |
+| Spark History      | http://host1.consultant.ru:18080    |
+| Hive Thrift Server | http://host1.consultant.ru:10000    |
 
 # Адреса API
 

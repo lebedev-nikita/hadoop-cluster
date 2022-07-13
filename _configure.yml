@@ -13,5 +13,3 @@
       when: (services is not defined or "spark" in services) and host_in_masters
     - role: hive/configure
       when: (services is not defined or "hive" in services) and host_in_masters
-    - role: nifi/configure
-      when: (services is not defined or "nifi" in services) and host_in_nifi_hosts

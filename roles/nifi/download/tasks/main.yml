@@ -1,8 +1,0 @@
-- import_role:
-    role: common/download_service
-  vars:
-    url: https://dlcdn.apache.org/nifi/1.16.3/nifi-1.16.3-bin.tar.gz
-    archive_file: nifi-1.16.3-bin.tar.gz
-    unarchived_dir: nifi-1.16.3
-    link: nifi
-    owner: nifi
