@@ -51,7 +51,7 @@
     {% for service in ["resourcemanager", "nodemanager"] %}
       <property>
         <name>yarn.{{ service }}.principal</name>
-        <value>{{ yarn_user }}/_HOST@{{ kdc_realm }}</value>
+        <value>{{ yarn_user }}/_HOST@{{ kdc_realm_service }}</value>
       </property>
       <property>
         <name>yarn.{{ service }}.keytab</name>
@@ -61,7 +61,7 @@
 
     <property>
       <name>yarn.resourcemanager.webapp.spnego-principal</name>
-      <value>HTTP/_HOST@{{ kdc_realm }}</value>
+      <value>HTTP/_HOST@{{ kdc_realm_service }}</value>
     </property>
     <property>
       <name>yarn.resourcemanager.webapp.spnego-keytab-file</name>

@@ -34,7 +34,7 @@
   {% if use_secure_mode %}
     <property>
       <name>mapreduce.jobhistory.principal</name>
-      <value>{{ mapred_user }}/_HOST@{{ kdc_realm }}</value>
+      <value>{{ mapred_user }}/_HOST@{{ kdc_realm_service }}</value>
     </property>
     <property>
       <name>mapreduce.jobhistory.keytab</name>

@@ -53,7 +53,7 @@
   {% if use_secure_mode %}
     <property>
       <name>hive.metastore.kerberos.principal</name>
-      <value>{{ hive_user }}/_HOST@{{ kdc_realm }}</value>
+      <value>{{ hive_user }}/_HOST@{{ kdc_realm_service }}</value>
     </property>
     <property>
       <name>hive.metastore.kerberos.keytab.file</name>
@@ -62,7 +62,7 @@
 
     <property>
       <name>hive.server2.authentication.kerberos.principal</name>
-      <value>{{ hive_user }}/_HOST@{{ kdc_realm }}</value>
+      <value>{{ hive_user }}/_HOST@{{ kdc_realm_service }}</value>
     </property>
     <property>
       <name>hive.server2.authentication.kerberos.keytab</name>
@@ -93,7 +93,7 @@
     {% for word in ["webui", "authentication"] %}
       <property>
         <name>hive.server2.{{ word }}.spnego.principal</name>
-        <value>HTTP/_HOST@{{ kdc_realm }}</value>
+        <value>HTTP/_HOST@{{ kdc_realm_service }}</value>
       </property>
       <property>
         <name>hive.server2.{{ word }}.spnego.keytab</name>

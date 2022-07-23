@@ -15,5 +15,7 @@ hadoop-slave2.consultant.ru
 http_proxy = svnmirror.consultant.ru:3128
 
 use_secure_mode = False
-kdc_host = hadoop-master.consultant.ru
-kdc_realm = HADOOP_TEST.CONSULTANT.RU
+kdc_host_service = hadoop-master.consultant.ru
+kdc_realm_service = HADOOP_TEST.CONSULTANT.RU
+kdc_host_user = ''
+kdc_realm_user = ''

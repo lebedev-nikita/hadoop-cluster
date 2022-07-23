@@ -4,6 +4,7 @@
 hosts=$@
 
 read -p "admin password: " admin_password
+read -p "realm: " realm
 
 while :
 do
@@ -12,6 +13,6 @@ do
   for host in $hosts
   do
     printf "$admin_password\n$password\n$password" | 
-      kadmin -q "addprinc $service/$host"
+      kadmin -q "addprinc $service/$host@$realm"
   done
 done

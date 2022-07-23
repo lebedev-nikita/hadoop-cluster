@@ -8,7 +8,7 @@
   fcc-mit-ticketflags = true
 
 [libdefaults]
-  default_realm = {{ kdc_realm }}
+  default_realm = {{ kdc_realm_service }}
   dns_lookup_realm = false
   dns_lookup_kdc = false
   ticket_lifetime = 24h
@@ -16,14 +16,16 @@
   forwardable = true
 
 [realms]
-  {{ kdc_realm }} = {
-    kdc = {{ kdc_host }}
-    admin_server = {{ kdc_host }}
+  {{ kdc_realm_service }} = {
+    kdc = {{ kdc_host_service }}
+    admin_server = {{ kdc_host_service }}
   }
-
-[domain_realm]
-  .consultant.ru = {{ kdc_realm }}
-  consultant.ru = {{ kdc_realm }}
+  {% if kdc_realm_user %}
+  {{ kdc_realm_user }} = {
+    kdc = {{ kdc_host_user }}
+    admin_server = {{ kdc_host_user }}
+  }
+  {% endif %}
 
 [logging]
   default = FILE:/var/log/krb5libs.log

@@ -14,7 +14,7 @@
   become: yes
   when: host_in_masters or not (item.master_only | default(False))
   shell: |
-    line1="addent -password -p {{ item.user }}/{{ inventory_hostname }} -k 1 -e aes256-cts"
+    line1="addent -password -p {{ item.user }}/{{ inventory_hostname }}@{{ kdc_realm_service }} -k 1 -e aes256-cts"
     line2="{{ item.password }}"
     line3="wkt {{ keytab_path }}"
     printf "$line1\n$line2\n$line3" | ktutil

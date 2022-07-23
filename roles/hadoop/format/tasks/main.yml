@@ -1,4 +1,5 @@
-- fail:
+- name: check that hadoop is not running
+  fail:
   when: hdfs_is_running or yarn_is_running
 
 - import_role: role=common/kinit

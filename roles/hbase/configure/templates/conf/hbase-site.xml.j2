@@ -48,7 +48,7 @@
     {% for service in ["master", "regionserver", "rest"] %}
       <property>
         <name>hbase.{{ service }}.kerberos.principal</name>
-        <value>{{ hbase_user }}/_HOST@{{ kdc_realm }}</value>
+        <value>{{ hbase_user }}/_HOST@{{ kdc_realm_service }}</value>
       </property>
       <property>
         <name>hbase.{{ service }}.keytab.file</name>

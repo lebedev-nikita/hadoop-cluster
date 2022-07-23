@@ -1,4 +1,5 @@
-- fail:
+- name: check that zookeeper is not running
+  fail:
   when: zookeeper_is_running
 
 - shell: "rm -rf {{ zookeeper_data_dir }}/version*"

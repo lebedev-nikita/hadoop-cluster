@@ -42,7 +42,7 @@ reconfigure: stop configure start
 DANGROUS_start_with_formatting: _test
 	ansible-playbook _start.yml -e '{ "need_format": true }'
 
-# reformat_DANGEROUS: stop
-# 	ansible-playbook _clean_data_DANGEROUS.yml && \
-# 	ansible-playbook _configure.yml && \
-# 	ansible-playbook _start.yml -e '{ "need_format": true }'
+reformat_DANGEROUS: stop
+	ansible-playbook _clean_data_DANGEROUS.yml && \
+	ansible-playbook _configure.yml && \
+	ansible-playbook _start.yml -e '{ "need_format": true }'

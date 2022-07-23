@@ -44,11 +44,27 @@
     </property>
     <property>
       <name>hadoop.http.authentication.kerberos.principal</name>
-      <value>HTTP/_HOST@{{ kdc_realm }}</value>
+      <value>HTTP/_HOST@{{ kdc_realm_service }}</value>
     </property>
     <property>
       <name>hadoop.http.authentication.kerberos.keytab</name>
       <value>{{ keytab_path }}</value>
+    </property>
+
+    <property>
+      <name>hadoop.security.auth_to_local</name>
+      <value>
+        {% if kdc_realm_user %}
+        {# 
+          Применить правило к пользователям вида ".*@KC.KPLUS"
+          Трансформировать их следующим образом: 
+          "SUBD-LebedevNA@KC.KPLUS" -> "SUBD-LebedevNA" 
+        #}
+        RULE:[1:$1@$0](^.*@{{ kdc_realm_user }})s/^(.*)@{{ kdc_realm_user }}/$1/g
+        RULE:[2:$1@$0](^.*@{{ kdc_realm_user }})s/^(.*)@{{ kdc_realm_user }}/$1/g
+        {% endif %}
+        DEFAULT
+      </value>
     </property>
   {% endif %}
 </configuration>

@@ -9,9 +9,9 @@ spark.history.fs.update.interval  10s
 spark.history.ui.port             {{ spark_history_ui_port }}
 
 {% if use_secure_mode %}
-spark.history.kerberos.principal  {{ spark_user }}/{{ inventory_hostname }}@{{ kdc_realm }}
+spark.history.kerberos.principal  {{ spark_user }}/{{ inventory_hostname }}@{{ kdc_realm_service }}
 spark.history.kerberos.keytab     {{ keytab_path }}
 
-spark.kerberos.principal          {{ spark_user }}/{{ inventory_hostname }}@{{ kdc_realm }}
+spark.kerberos.principal          {{ spark_user }}/{{ inventory_hostname }}@{{ kdc_realm_service }}
 spark.kerberos.keytab             {{ keytab_path }}
 {% endif %}

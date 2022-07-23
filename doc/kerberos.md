@@ -103,6 +103,7 @@ quit
 ./addprinc.sh hadoop-{master,slave1,slave2,slave3}.consultant.ru
 # Скрипт запросит переменные
 admin password: <пароль от kerberos-пользователя "your_name/admin">
+realm: SERVICE
 
 Service: hdfs-dev1
 Password:
@@ -118,6 +119,7 @@ Password:
 
 ./addprinc.sh hadoop-master.consultant.ru
 admin password:
+realm: SERVICE
 
 Service: spark-dev1
 Password:

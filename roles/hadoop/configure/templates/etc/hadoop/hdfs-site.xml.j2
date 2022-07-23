@@ -44,7 +44,7 @@
     {% for service in ["namenode", "secondary.namenode", "datanode"] %}
       <property>
         <name>dfs.{{ service }}.kerberos.principal</name>
-        <value>{{ hdfs_user }}/_HOST@{{ kdc_realm }}</value>
+        <value>{{ hdfs_user }}/_HOST@{{ kdc_realm_service }}</value>
       </property>
       <property>
         <name>dfs.{{ service }}.keytab.file</name>
@@ -54,7 +54,7 @@
 
     <property>
       <name>dfs.web.authentication.kerberos.principal</name>
-      <value>HTTP/_HOST@{{ kdc_realm }}</value>
+      <value>HTTP/_HOST@{{ kdc_realm_service }}</value>
     </property>
     <property>
       <name>dfs.web.authentication.kerberos.keytab</name>
